@@ -19,7 +19,7 @@ module.exports = {
                 },
             },
             {
-                test: /\.pures$/,
+                test: /\.purs$/,
                 loader: 'purs-loader',
                 options: {
                     pscPackage: true,
