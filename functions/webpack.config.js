@@ -1,6 +1,6 @@
 'use strict';
 
-var nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
     entry: './src/index.ts',
@@ -24,12 +24,13 @@ module.exports = {
                 options: {
                     pscPackage: true,
                     psc: 'psa',
+                    bundle: true,
                 },
             },
         ],
     },
     resolve: {
-        extensions: [ '.ts', '.tsx', '.js' ],
+        extensions: [ '.ts', '.tsx', '.js', '.purs' ],
     },
     externals: [nodeExternals()]
 };
