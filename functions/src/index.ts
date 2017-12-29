@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { purescript } from './lib';
+import { purescript } from './lib.purs';
 
 // Start writing Firebase Functions
 // https://firebase.google.com/functions/write-firebase-functions
