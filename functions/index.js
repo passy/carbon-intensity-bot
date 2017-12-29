@@ -71,10 +71,11 @@
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const functions = __webpack_require__(1);
+const lib_purs_1 = __webpack_require__(2);
 // Start writing Firebase Functions
 // https://firebase.google.com/functions/write-firebase-functions
 exports.helloWorld = functions.https.onRequest((request, response) => {
-    response.send("Hello from Firebase!");
+    response.send("Hello from" + lib_purs_1.default.purescript() + "!");
 });
 
 
@@ -83,6 +84,12 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 /***/ (function(module, exports) {
 
 module.exports = require("firebase-functions");
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+throw new Error("Module parse failed: Unexpected token (1:7)\nYou may need an appropriate loader to handle this file type.\n| module Lib (purescript) where\n| \n| import Prelude");
 
 /***/ })
 /******/ ])));

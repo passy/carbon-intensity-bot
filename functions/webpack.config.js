@@ -18,6 +18,14 @@ module.exports = {
                     transpileOnly: true,
                 },
             },
+            {
+                test: /\.pures$/,
+                loader: 'purs-loader',
+                options: {
+                    pscPackage: true,
+                    psc: 'psa',
+                },
+            },
         ],
     },
     resolve: {
