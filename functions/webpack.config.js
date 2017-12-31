@@ -22,7 +22,6 @@ module.exports = {
                 test: /\.purs$/,
                 loader: 'purs-loader',
                 options: {
-                    pscPackage: true,
                     psc: 'psa',
                     bundle: true,
                 },

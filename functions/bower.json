@@ -1,0 +1,8 @@
+{
+  "name": "functions",
+  "main": "lib/lib.purs",
+  "private": true,
+  "devDependencies": {
+    "purescript-affjax": "^5.0.0"
+  }
+}

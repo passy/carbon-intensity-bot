@@ -39,24 +39,24 @@ const Flows = new Map([
     if (!app.isPermissionGranted()) {
       return Promise.reject(new Error('Permission not granted'));
     }
-    // const requestedPermission = app.data.requestedPermission;
-    // const permissions = app.SupportedPermissions;
-    // if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
-    //   // If we requested coarse location, it means that we're on a speaker device.
-    //   app.userStorage.location = app.getDeviceLocation().city;
-    //   showLocationOnScreen();
-    // }
-    // if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
-    //   // If we requested precise location, it means that we're on a phone.
-    //   // Because we will get only latitude and longitude, we need to reverse geocode
-    //   // to get the city.
-    //   const { coordinates } = app.getDeviceLocation();
-    //   return coordinatesToCity(coordinates.latitude, coordinates.longitude)
-    //     .then(city => {
-    //       app.userStorage.location = city;
-    //       showLocationOnScreen();
-    //     });
-    // }
+    const requestedPermission = app.data.requestedPermission;
+    const permissions = app.SupportedPermissions;
+    if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
+      // If we requested coarse location, it means that we're on a speaker device.
+      app.userStorage.location = app.getDeviceLocation().city;
+      showLocationOnScreen();
+    }
+    if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
+      // If we requested precise location, it means that we're on a phone.
+      // Because we will get only latitude and longitude, we need to reverse geocode
+      // to get the city.
+      const { coordinates } = app.getDeviceLocation();
+      return coordinatesToCity(coordinates.latitude, coordinates.longitude)
+        .then(city => {
+          app.userStorage.location = city;
+          showLocationOnScreen();
+        });
+    }
     return Promise.reject(new Error('Unrecognized permission'));
   }],
 ]);
@@ -71,7 +71,7 @@ const Responses = {
     </speak>`;
   },
   permissionReason: () => {
-    return 'To find out your local electricity source'
+    return 'To find out your local electricity source' + purescript
   }
 };
 
