@@ -3,6 +3,7 @@
   "main": "lib/lib.purs",
   "private": true,
   "devDependencies": {
-    "purescript-affjax": "^5.0.0"
+    "purescript-affjax": "^5.0.0",
+    "purescript-aff-promise": "^1.0.0"
   }
 }
