@@ -1,4 +1,4 @@
-module Lib (purescript) where
+module Lib (requestCo2LatLon, Co2Response, ApiToken) where
 
 import Prelude
 
@@ -7,6 +7,7 @@ import Control.Monad.Eff (Eff)
 import Control.Promise as Promise
 import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.?))
 import Data.Either (Either(Right, Left))
+import Data.Function.Uncurried (Fn3, mkFn3)
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
 
@@ -14,9 +15,6 @@ newtype ApiToken = ApiToken URL
 
 baseUrl :: String
 baseUrl = "https://api.co2signal.com/v1/"
-
-purescript :: String
-purescript = "Pure" <> "script"
 
 data Co2Response = Co2Response
     { countryCode :: String
@@ -46,8 +44,11 @@ getCo2LatLonAff token lat lon = do
   { response } <- requestCo2LatLonAff token lat lon
   pure $ decodeJson response
 
-requestCo2LatLon :: forall eff. ApiToken -> Number -> Number -> Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response)
-requestCo2LatLon token lat lon = Promise.fromAff $ do
+requestCo2LatLon_ :: forall eff. ApiToken -> Number -> Number -> Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response)
+requestCo2LatLon_ token lat lon = Promise.fromAff $ do
     getCo2LatLonAff token lat lon >>= case _ of
         Left e -> throwError $ error e
         Right res -> pure res
+
+requestCo2LatLon :: forall eff. Fn3 ApiToken Number Number (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon = mkFn3 requestCo2LatLon_

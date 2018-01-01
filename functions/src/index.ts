@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as actions from "actions-on-google";
-import { purescript } from "./lib.purs";
+import * as lib from "./lib.purs";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/functions/write-firebase-functions
@@ -18,6 +18,12 @@ const Actions = {
   UNKNOWN_INTENT: "error.unknown_intent",
   READ_CARBON_INTENSITY: "carbon.read",
 };
+
+declare interface Co2Response {
+  readonly countryCode: string;
+  readonly carbonIntensity: number;
+  readonly fossilFuelPercentage: number;
+}
 
 const Flows = new Map([
   [Actions.UNKNOWN_INTENT, (app) => {
@@ -44,17 +50,12 @@ const Flows = new Map([
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
       app.userStorage.location = app.getDeviceLocation().city;
-      showLocationOnScreen();
     }
     if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
-      // If we requested precise location, it means that we're on a phone.
-      // Because we will get only latitude and longitude, we need to reverse geocode
-      // to get the city.
       const { coordinates } = app.getDeviceLocation();
-      return coordinatesToCity(coordinates.latitude, coordinates.longitude)
-        .then(city => {
-          app.userStorage.location = city;
-          showLocationOnScreen();
+      return lib.requestCo2LatLon(coordinates.latitude, coordinates.longitude)
+        .then((res: Co2Response) => {
+          return app.tell(Responses.sayIntensity(res));
         });
     }
     return Promise.reject(new Error('Unrecognized permission'));
@@ -71,7 +72,12 @@ const Responses = {
     </speak>`;
   },
   permissionReason: () => {
-    return 'To find out your local electricity source' + purescript
+    return 'To find out your local electricity source'
+  },
+  sayIntensity: (res: Co2Response) => {
+    return ssml`<speak>
+      The current fossil fuel percentage of the energy generated is ${res.fossilFuelPercentage.toString()}.
+    </speak>`;
   }
 };
 
