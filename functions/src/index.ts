@@ -117,7 +117,7 @@ const Flows = new Map([
 ]);
 
 
-export const helloWorld = functions.https.onRequest((request, response) => {
+export const webhook = functions.https.onRequest((request, response) => {
   const app = new actions.DialogflowApp({ request, response });
   app.handleRequest(Flows);
 });
