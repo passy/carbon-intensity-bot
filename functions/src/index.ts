@@ -107,7 +107,8 @@ const Flows = new Map([
     }
     if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
       const { coordinates } = app.getDeviceLocation();
-      return lib.requestCo2LatLon(coordinates.latitude, coordinates.longitude)
+      console.log('COORDINATES: ', coordinates);
+      return lib.requestCo2LatLon('xxx', coordinates.latitude, coordinates.longitude)
         .then((res: Co2Response) => {
           return app.tell(Responses.sayIntensity(res));
         });
