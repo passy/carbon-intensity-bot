@@ -13,7 +13,7 @@
   "dependencies": {
     "actions-on-google": "^1.7.0",
     "firebase-admin": "~5.4.2",
-    "firebase-functions": "^0.7.1",
+    "firebase-functions": "^0.8.0",
     "xhr2": "^0.1.4"
   },
   "devDependencies": {
