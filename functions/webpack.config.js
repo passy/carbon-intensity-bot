@@ -23,7 +23,6 @@ module.exports = {
                 loader: 'purs-loader',
                 options: {
                     psc: 'psa',
-                    bundle: true,
                 },
             },
         ],

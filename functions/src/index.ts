@@ -88,6 +88,11 @@ const Actions = {
 };
 
 const Responses = {
+  welcome: () => {
+    return ssml`<speak>
+      Hey, how is it going? Ask me about the current electricity production carbon emissions.
+    </speak>`;
+  },
   errorUnknownIntent: () => {
     return ssml`<speak>
       Woops!
@@ -117,6 +122,9 @@ const Flows = new Map([
   [Actions.UNKNOWN_INTENT, (app) => {
     return app.tell(Responses.errorUnknownIntent());
   }],
+  // [Actions.WELCOME, (app) => {
+  //   return app.tell(Responses.welcome());
+  // }],
   [Actions.REQUEST_LOC_PERMISSION, (app) => {
     const permissions = app.SupportedPermissions;
     // If the request comes from a phone, we can't use coarse location.
@@ -133,16 +141,24 @@ const Flows = new Map([
     if (!app.isPermissionGranted()) {
       return Promise.reject(new Error('Permission not granted'));
     }
+
+    const mapsClient = maps.createClient({
+      key: functions.config().maps.key,
+    });
     const requestedPermission = app.data.requestedPermission;
     const permissions = app.SupportedPermissions;
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
-      app.userStorage.location = app.getDeviceLocation().city;
+      const countryCode = app.getDeviceLocation().countryCode;
+      lib.requestCo2(functions.config().co2signal.key, countryCode)
+        .then((res: Co2Response) => {
+          return app.tell(Responses.sayIntensity(res));
+        });
     }
     if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
       const { coordinates } = app.getDeviceLocation();
-      console.log('COORDINATES: ', coordinates);
-      return lib.requestCo2LatLon('xxx', coordinates.latitude, coordinates.longitude)
+      return coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude)
+        .then(countryCode => lib.requestCo2(functions.config().co2signal.key, countryCode))
         .then((res: Co2Response) => {
           return app.tell(Responses.sayIntensity(res));
         });
