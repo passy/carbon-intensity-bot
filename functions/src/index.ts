@@ -1,6 +1,40 @@
 import * as functions from "firebase-functions";
 import * as actions from "actions-on-google";
+import * as maps from "@google/maps";
 import * as lib from "./lib.purs";
+
+/**
+ * Gets the country code from results returned by Google Maps reverse geocoding from coordinates.
+ * @param {object} mapsClient
+ * @param {number} latitude
+ * @param {number} longitude
+ * @return {Promise<string>}
+ */
+const coordinatesToCountryCode = (mapsClient: any, latitude: number, longitude: number): Promise<string> => {
+  const latlng = [latitude, longitude];
+  return new Promise((resolve, reject) => mapsClient.reverseGeocode({ latlng },
+    /**
+     * @param {Error} e
+     * @param {Object<string, *>} response
+     */
+    (e: Error, response: any) => {
+      if (e) {
+        return reject(e);
+      }
+      const { results } = response.json;
+      /** @type {Array<Object<string, *>>} */
+      const components = results[0].address_components;
+      for (const component of components) {
+        for (const type of component.types) {
+          if (type === 'country') {
+            return resolve(component.short_name);
+          }
+        }
+      }
+      reject(new Error('Could not parse country code from Google Maps results'));
+    }
+  ));
+}
 
 /**
  * Sanitize template literal inputs by escaping characters into XML entities to use in SSML

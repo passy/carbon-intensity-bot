@@ -11,6 +11,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@google/maps": "^0.4.5",
     "actions-on-google": "^1.7.0",
     "firebase-admin": "~5.4.2",
     "firebase-functions": "^0.8.0",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@types/actions-on-google": "^1.6.0",
+    "@types/googlemaps": "^3.30.4",
     "@types/jest": "^22.0.0",
     "jest": "^22.0.4",
     "purescript": "^0.11.7",
