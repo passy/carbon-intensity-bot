@@ -106,7 +106,7 @@ const Responses = {
   },
   sayIntensity: (res: Co2Response) => {
     return ssml`<speak>
-      The current fossil fuel percentage of the energy generated is ${res.value0.fossilFuelPercentage.toString()}.
+      In your area, the electricity is generated using ${res.value0.fossilFuelPercentage.toFixed(1)}% fossil fuels.
     </speak>`;
   }
 };
