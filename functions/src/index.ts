@@ -106,7 +106,7 @@ const Responses = {
   },
   sayIntensity: (res: Co2Response) => {
     return ssml`<speak>
-      The current fossil fuel percentage of the energy generated is ${res.fossilFuelPercentage.toString()}.
+      The current fossil fuel percentage of the energy generated is ${res.value0.fossilFuelPercentage.toString()}.
     </speak>`;
   }
 };
@@ -125,9 +125,9 @@ const Flows = new Map([
   [Actions.UNKNOWN_INTENT, (app) => {
     return app.tell(Responses.errorUnknownIntent());
   }],
-  // [Actions.WELCOME, (app) => {
-  //   return app.tell(Responses.welcome());
-  // }],
+  [Actions.WELCOME, (app) => {
+    return app.tell(Responses.welcome());
+  }],
   [Actions.REQUEST_LOC_PERMISSION, (app) => {
     const permissions = app.SupportedPermissions;
     // If the request comes from a phone, we can't use coarse location.
@@ -155,7 +155,7 @@ const Flows = new Map([
       const countryCode = app.getDeviceLocation().countryCode;
       lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
         .then((res: Co2Response) => {
-          return app.tell(Responses.sayIntensity(res.value0));
+          return app.tell(Responses.sayIntensity(res));
         });
     }
     if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
@@ -163,8 +163,7 @@ const Flows = new Map([
       return coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude)
         .then(countryCode => lib.requestCo2Country(functions.config().co2signal.key, countryCode)())
         .then((res: Co2Response) => {
-          console.log('res: ', res);
-          return app.tell(Responses.sayIntensity(res.value0));
+          return app.tell(Responses.sayIntensity(res));
         });
     }
     return Promise.reject(new Error('Unrecognized permission'));
