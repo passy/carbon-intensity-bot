@@ -16,6 +16,8 @@ import Network.HTTP.StatusCode (StatusCode(..))
 newtype ApiToken = ApiToken URL
 newtype CountryCode = CountryCode String
 
+newtype LatLon = LatLon { lat :: Number, lon :: Number }
+
 baseUrl :: String
 baseUrl = "https://api.co2signal.com/v1/"
 
@@ -34,10 +36,9 @@ instance decodeJsonCo2Response :: DecodeJson Co2Response where
     fossilFuelPercentage <- data' .? "fossilFuelPercentage"
     pure $ Co2Response { countryCode, carbonIntensity, fossilFuelPercentage }
 
--- TODO: Type lat/lon
-requestCo2LatLonAff :: forall e a. Respondable a => Number -> Number -> ApiToken -> Affjax e a
-requestCo2LatLonAff lat lon (ApiToken token) =
-    get $ baseUrl <> "latest?lat=" <> show lat <> "&lon=" <> show lon <>
+requestCo2LatLonAff :: forall e a. Respondable a => LatLon -> ApiToken -> Affjax e a
+requestCo2LatLonAff (LatLon l) (ApiToken token) =
+    get $ baseUrl <> "latest?lat=" <> show l.lat <> "&lon=" <> show l.lon <>
                                     "&auth-token=" <> token
 
 requestCo2CountryAff :: forall e a. Respondable a => CountryCode -> ApiToken -> Affjax e a
@@ -63,9 +64,9 @@ requestCo2 fn token = Promise.fromAff $ do
         Left e -> throwError $ error e
         Right res -> pure res
 
-requestCo2LatLon_ :: forall eff. ApiToken -> Number -> Number -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
-requestCo2LatLon_ token lat lon =
-    requestCo2 (requestCo2LatLonAff lat lon) token
+requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon_ token l =
+    requestCo2 (requestCo2LatLonAff l) token
 
 requestCo2LatLon :: forall eff. Fn3 ApiToken Number Number (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
 requestCo2LatLon = mkFn3 requestCo2LatLon_
