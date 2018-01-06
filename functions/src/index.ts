@@ -111,11 +111,14 @@ const Responses = {
   }
 };
 
-
-declare interface Co2Response {
+declare interface Co2Data {
   readonly countryCode: string;
   readonly carbonIntensity: number;
   readonly fossilFuelPercentage: number;
+}
+
+declare interface Co2Response {
+  readonly value0: Co2Data;
 }
 
 const Flows = new Map([
@@ -143,24 +146,25 @@ const Flows = new Map([
     }
 
     const mapsClient = maps.createClient({
-      key: functions.config().maps.key,
+      key: functions.config().geocoding.key,
     });
     const requestedPermission = app.data.requestedPermission;
     const permissions = app.SupportedPermissions;
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
       const countryCode = app.getDeviceLocation().countryCode;
-      lib.requestCo2(functions.config().co2signal.key, countryCode)
+      lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
         .then((res: Co2Response) => {
-          return app.tell(Responses.sayIntensity(res));
+          return app.tell(Responses.sayIntensity(res.value0));
         });
     }
     if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
       const { coordinates } = app.getDeviceLocation();
       return coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude)
-        .then(countryCode => lib.requestCo2(functions.config().co2signal.key, countryCode))
+        .then(countryCode => lib.requestCo2Country(functions.config().co2signal.key, countryCode)())
         .then((res: Co2Response) => {
-          return app.tell(Responses.sayIntensity(res));
+          console.log('res: ', res);
+          return app.tell(Responses.sayIntensity(res.value0));
         });
     }
     return Promise.reject(new Error('Unrecognized permission'));

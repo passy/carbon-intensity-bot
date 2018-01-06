@@ -1,4 +1,4 @@
-module Lib (requestCo2LatLon, Co2Response, ApiToken) where
+module Lib (requestCo2LatLon, requestCo2Country, Co2Response, ApiToken, CountryCode) where
 
 import Prelude
 
@@ -23,7 +23,6 @@ data Co2Response = Co2Response
     { countryCode :: String
     , carbonIntensity :: Number
     , fossilFuelPercentage :: Number
-    , datetime :: String -- FIXME
     }
 
 instance decodeJsonCo2Response :: DecodeJson Co2Response where
@@ -32,9 +31,8 @@ instance decodeJsonCo2Response :: DecodeJson Co2Response where
     countryCode <- obj .? "countryCode"
     data' <- obj .? "data"
     carbonIntensity <- data' .? "carbonIntensity"
-    datetime <- data' .? "datetime"
     fossilFuelPercentage <- data' .? "fossilFuelPercentage"
-    pure $ Co2Response { countryCode, carbonIntensity, datetime, fossilFuelPercentage }
+    pure $ Co2Response { countryCode, carbonIntensity, fossilFuelPercentage }
 
 -- TODO: Type lat/lon
 requestCo2LatLonAff :: forall e a. Respondable a => Number -> Number -> ApiToken -> Affjax e a
