@@ -1,4 +1,10 @@
-module Lib (requestCo2LatLon, requestCo2Country, Co2Response, ApiToken, CountryCode) where
+module Lib
+    ( requestCo2LatLon
+    , requestCo2Country
+    , Co2Response
+    , ApiToken
+    , CountryCode
+    , LatLon ) where
 
 import Prelude
 
@@ -8,7 +14,7 @@ import Control.Promise as Promise
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.?))
 import Data.Either (Either(Right, Left))
-import Data.Function.Uncurried (Fn2, Fn3, mkFn2, mkFn3)
+import Data.Function.Uncurried (Fn2, mkFn2)
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
 import Network.HTTP.StatusCode (StatusCode(..))
@@ -68,8 +74,8 @@ requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff)
 requestCo2LatLon_ token l =
     requestCo2 (requestCo2LatLonAff l) token
 
-requestCo2LatLon :: forall eff. Fn3 ApiToken Number Number (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
-requestCo2LatLon = mkFn3 requestCo2LatLon_
+requestCo2LatLon :: forall eff. Fn2 ApiToken LatLon (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon = mkFn2 requestCo2LatLon_
 
 requestCo2Country_ :: forall eff. ApiToken -> CountryCode -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
 requestCo2Country_ token countryCode =
