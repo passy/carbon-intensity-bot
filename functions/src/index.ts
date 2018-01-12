@@ -90,7 +90,7 @@ const Actions = {
 const Responses = {
   welcome: () => {
     return ssml`<speak>
-      Hey, how is it going? Ask me about the current electricity production carbon emissions.
+      Hi, I'm the Carbon Intensity bot. Would you like me to tell you your local carbon intensity or fossil fuel usage?
     </speak>`;
   },
   errorUnknownIntent: () => {
@@ -106,7 +106,9 @@ const Responses = {
   },
   sayIntensity: (res: Co2Response) => {
     return ssml`<speak>
-      In your area, the electricity is generated using ${res.value0.fossilFuelPercentage.toFixed(1)}% fossil fuels.
+      In your area, the electricity is generated
+      using ${res.value0.fossilFuelPercentage.toFixed(1)}%
+      fossil fuels leading to a carbon intensity of ${res.value0.carbonIntensity.toFixed(1)}.
     </speak>`;
   }
 };
@@ -126,7 +128,7 @@ const Flows = new Map([
     return app.tell(Responses.errorUnknownIntent());
   }],
   [Actions.WELCOME, (app) => {
-    return app.tell(Responses.welcome());
+    return app.ask(Responses.welcome());
   }],
   [Actions.REQUEST_LOC_PERMISSION, (app) => {
     const permissions = app.SupportedPermissions;
