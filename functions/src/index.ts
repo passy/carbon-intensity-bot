@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as actions from "actions-on-google";
 import * as maps from "@google/maps";
+// @ts-ignore
 import * as lib from "./lib.purs";
 
 /**

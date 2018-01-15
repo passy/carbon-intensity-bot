@@ -1,6 +1,7 @@
 'use strict';
 
 const nodeExternals = require('webpack-node-externals');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     entry: './src/index.ts',
@@ -30,5 +31,8 @@ module.exports = {
     resolve: {
         extensions: [ '.ts', '.tsx', '.js', '.purs' ],
     },
-    externals: [nodeExternals()]
+    externals: [nodeExternals()],
+    plugins: [
+        new ForkTsCheckerWebpackPlugin()
+    ],
 };
