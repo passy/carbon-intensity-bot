@@ -7,6 +7,13 @@ import * as maps from "@google/maps";
 import * as lib from "./lib.purs";
 
 /**
+ * For geocoding city + ZIP, I could do something like this:
+ *
+ * https://maps.googleapis.com/maps/api/geocode/json?components=country:gb|locality:London|post_code:WC1H%200PL&key=key
+ * https://maps.googleapis.com/maps/api/geocode/json?components=locality:Altenholz|post_code:24161&key=key
+ */
+
+/**
  * Gets the country code from results returned by Google Maps reverse geocoding from coordinates.
  * @param {object} mapsClient
  * @param {number} latitude
