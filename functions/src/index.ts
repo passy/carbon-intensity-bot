@@ -13,6 +13,23 @@ import * as lib from "./lib.purs";
  * https://maps.googleapis.com/maps/api/geocode/json?components=locality:Altenholz|post_code:24161&key=key
  */
 
+const coarseLocationToCoordinates = (mapsClient: any, postCode: string, city: string): Promise<[number, number]> => {
+  return new Promise((resolve, reject) => mapsClient.geocode({
+    components: {
+      locality: city,
+      post_code: postCode,
+    }
+  }, (e: Error, response: any) => {
+    if (e) {
+      return reject(e);
+    }
+
+      const { results } = response.json;
+      const components = results[0].geometry;
+      return resolve([components.location.lat, components.location.lng]);
+  }));
+};
+
 /**
  * Gets the country code from results returned by Google Maps reverse geocoding from coordinates.
  * @param {object} mapsClient
