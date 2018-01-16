@@ -8,12 +8,12 @@ import * as lib from "./lib.purs";
 
 /**
  * For geocoding city + ZIP, I could do something like this:
- *
+ * 
  * https://maps.googleapis.com/maps/api/geocode/json?components=country:gb|locality:London|post_code:WC1H%200PL&key=key
  * https://maps.googleapis.com/maps/api/geocode/json?components=locality:Altenholz|post_code:24161&key=key
  */
 
-const coarseLocationToCoordinates = (mapsClient: any, postCode: string, city: string): Promise<[number, number]> => {
+const coarseLocationToCoordinates = (mapsClient: any, postCode: string, city: string): Promise<{latitude: number, longitude: number}> => {
   return new Promise((resolve, reject) => mapsClient.geocode({
     components: {
       locality: city,
@@ -26,7 +26,7 @@ const coarseLocationToCoordinates = (mapsClient: any, postCode: string, city: st
 
       const { results } = response.json;
       const components = results[0].geometry;
-      return resolve([components.location.lat, components.location.lng]);
+      return resolve({ latitude: components.location.lat, longitude: components.location.lng});
   }));
 };
 
@@ -179,23 +179,24 @@ const Flows = new Map([
     });
     const requestedPermission = app.data.requestedPermission;
     const permissions = app.SupportedPermissions;
+
+    let promise;
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
-      const countryCode = app.getDeviceLocation().countryCode;
-      lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
-        .then((res: Co2Response) => {
-          return app.tell(Responses.sayIntensity(res));
-        });
-    }
-    if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
+      const location = app.getDeviceLocation();
+      promise = coarseLocationToCoordinates(mapsClient, location.zipCode, location.city);
+    } else if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
       const { coordinates } = app.getDeviceLocation();
-      return coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude)
+      promise = coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude);
+    } else {
+      return Promise.reject(new Error('Unrecognized permission'));
+    }
+
+    return promise
         .then(countryCode => lib.requestCo2Country(functions.config().co2signal.key, countryCode)())
         .then((res: Co2Response) => {
           return app.tell(Responses.sayIntensity(res));
         });
-    }
-    return Promise.reject(new Error('Unrecognized permission'));
   }],
 ]);
 
