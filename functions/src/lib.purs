@@ -60,7 +60,8 @@ getCo2Aff
     -> Aff (ajax :: AJAX | eff) (Either String Co2Response)
 getCo2Aff req = do
   { status, response } <- req
-  when (status /= StatusCode 200) $ throwError $ error $ "Response code " <> show status <> " /= 200"
+  when (status /= StatusCode 200) $
+    throwError $ error $ "Response code " <> show status <> " /= 200: " <> show response
   pure $ decodeJson response
 
 requestCo2
