@@ -31,6 +31,7 @@ data Co2Response = Co2Response
     { countryCode :: String
     , carbonIntensity :: Number
     , fossilFuelPercentage :: Number
+    , carbonIntensityUnit :: String
     }
 
 instance decodeJsonCo2Response :: DecodeJson Co2Response where
@@ -40,7 +41,9 @@ instance decodeJsonCo2Response :: DecodeJson Co2Response where
     data' <- obj .? "data"
     carbonIntensity <- data' .? "carbonIntensity"
     fossilFuelPercentage <- data' .? "fossilFuelPercentage"
-    pure $ Co2Response { countryCode, carbonIntensity, fossilFuelPercentage }
+    units <- obj .? "units"
+    carbonIntensityUnit <- units .? "carbonIntensityUnit"
+    pure $ Co2Response { countryCode, carbonIntensity, fossilFuelPercentage, carbonIntensityUnit }
 
 requestCo2LatLonAff :: forall e a. Respondable a => LatLon -> ApiToken -> Affjax e a
 requestCo2LatLonAff (LatLon l) (ApiToken token) =

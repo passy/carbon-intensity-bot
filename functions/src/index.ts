@@ -135,7 +135,8 @@ const Responses = {
     return ssml`<speak>
       In your area, the electricity is generated
       using ${res.value0.fossilFuelPercentage.toFixed(1)}%
-      fossil fuels leading to a carbon intensity of ${res.value0.carbonIntensity.toFixed(1)}.
+      fossil fuels leading to a carbon intensity of
+      ${res.value0.carbonIntensity.toFixed(1)} ${res.value0.carbonIntensityUnit}.
     </speak>`;
   }
 };
@@ -144,6 +145,7 @@ declare interface Co2Data {
   readonly countryCode: string;
   readonly carbonIntensity: number;
   readonly fossilFuelPercentage: number;
+  readonly carbonIntensityUnit: string;
 }
 
 declare interface Co2Response {
