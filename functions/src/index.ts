@@ -182,19 +182,21 @@ const Flows = new Map([
     const requestedPermission = app.data.requestedPermission;
     const permissions = app.SupportedPermissions;
 
-    let promise;
+    // TODO: Use high-prec resolution first, then fall back. And if at all possible, do this in Purs.
+    let coordinatesP;
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
       const location = app.getDeviceLocation();
-      promise = coarseLocationToCoordinates(mapsClient, location.zipCode, location.city);
+      coordinatesP = coarseLocationToCoordinates(mapsClient, location.zipCode, location.city);
     } else if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
       const { coordinates } = app.getDeviceLocation();
-      promise = coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude);
+      coordinatesP = Promise.resolve(coordinates);
     } else {
-      return Promise.reject(new Error('Unrecognized permission'));
+      coordinatesP = Promise.reject(new Error('Unrecognized permission'));
     }
 
-    return promise
+
+    return coordinatesP.then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
         .then(countryCode => lib.requestCo2Country(functions.config().co2signal.key, countryCode)())
         .then((res: Co2Response) => {
           return app.tell(Responses.sayIntensity(res));
