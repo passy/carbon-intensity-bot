@@ -43,7 +43,7 @@ instance decodeJsonCo2Response :: DecodeJson Co2Response where
     carbonIntensity <- data' .? "carbonIntensity"
     fossilFuelPercentage <- data' .? "fossilFuelPercentage"
     units <- obj .? "units"
-    carbonIntensityUnit <- units .? "carbonIntensityUnit"
+    carbonIntensityUnit <- units .? "carbonIntensity"
     pure $ Co2Response { countryCode, carbonIntensity, fossilFuelPercentage, carbonIntensityUnit }
 
 requestCo2LatLonAff :: forall e a. Respondable a => LatLon -> ApiToken -> Affjax e a
