@@ -18,7 +18,6 @@ import Data.Function.Uncurried (Fn2, mkFn2)
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
 import Network.HTTP.StatusCode (StatusCode(..))
-import Debug.Trace (spy)
 
 newtype ApiToken = ApiToken URL
 newtype CountryCode = CountryCode String
@@ -48,12 +47,12 @@ instance decodeJsonCo2Response :: DecodeJson Co2Response where
 
 requestCo2LatLonAff :: forall e a. Respondable a => LatLon -> ApiToken -> Affjax e a
 requestCo2LatLonAff (LatLon l) (ApiToken token) =
-    get $ spy $ baseUrl <> "latest?lat=" <> show l.lat <> "&lon=" <> show l.lon <>
+    get $ baseUrl <> "latest?lat=" <> show l.lat <> "&lon=" <> show l.lon <>
                                     "&auth-token=" <> token
 
 requestCo2CountryAff :: forall e a. Respondable a => CountryCode -> ApiToken -> Affjax e a
 requestCo2CountryAff (CountryCode code) (ApiToken token) =
-    get $ spy $ baseUrl <> "latest?countryCode=" <> code <> "&auth-token=" <> token
+    get $ baseUrl <> "latest?countryCode=" <> code <> "&auth-token=" <> token
 
 getCo2Aff
     :: forall eff
