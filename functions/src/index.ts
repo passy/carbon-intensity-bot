@@ -8,7 +8,7 @@ import * as lib from "./lib.purs";
 
 /**
  * For geocoding city + ZIP, I could do something like this:
- * 
+ *
  * https://maps.googleapis.com/maps/api/geocode/json?components=country:gb|locality:London|post_code:WC1H%200PL&key=key
  * https://maps.googleapis.com/maps/api/geocode/json?components=locality:Altenholz|post_code:24161&key=key
  */
@@ -182,7 +182,6 @@ const Flows = new Map([
     const requestedPermission = app.data.requestedPermission;
     const permissions = app.SupportedPermissions;
 
-    // TODO: Use high-prec resolution first, then fall back. And if at all possible, do this in Purs.
     let coordinatesP;
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
@@ -194,7 +193,6 @@ const Flows = new Map([
     } else {
       coordinatesP = Promise.reject(new Error('Unrecognized permission'));
     }
-
 
     return coordinatesP.then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
         .then(countryCode => lib.requestCo2Country(functions.config().co2signal.key, countryCode)())
