@@ -65,7 +65,7 @@ getCo2Aff req = do
   pure $ decodeJson response
 
 requestCo2
-    :: forall eff a
+    :: forall eff
     .  (ApiToken -> Affjax eff Json)
     -> ApiToken
     -> Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response)
