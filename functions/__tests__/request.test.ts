@@ -27,7 +27,7 @@ const loadFixture = name => {
 };
 
 it("sends a response", () => {
-  expect.assertions(1);
+  expect.assertions(2);
   const req = loadFixture("carbon_zip");
 
   const resp = new MockResponse();
