@@ -16,7 +16,6 @@
     "firebase-admin": "~5.8.0",
     "firebase-functions": "^0.8.0",
     "fork-ts-checker-webpack-plugin": "^0.3.0",
-    "supertest": "^3.0.0",
     "xhr2": "^0.1.4"
   },
   "devDependencies": {

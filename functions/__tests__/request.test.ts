@@ -1,7 +1,6 @@
 import * as triggers from "../lib/index.js";
 import * as fs from "fs";
 import * as path from "path";
-import * as request from "supertest";
 import * as XHR from "xhr2";
 import {
   MockRequest,
@@ -12,15 +11,16 @@ import * as functions from "firebase-functions";
 class MockResponse {
   statusCode: number;
   headers: Map<string, string>;
+  body: string;
   resolve: Function;
 
   constructor (resolve: Function) {
     this.statusCode = 200;
-    this.headers = {};
+    this.headers = new Map();
     this.resolve = resolve;
   }
 
-  status (statusCode) {
+  status (statusCode: number) {
     this.statusCode = statusCode;
     return this;
   }
@@ -38,6 +38,7 @@ class MockResponse {
 };
 
 // Manually mock that static global.
+// @ts-ignore
 functions.config = () => {
   return JSON.parse(
     fs.readFileSync(path.join(__dirname, "..", ".runtimeconfig.json"), {
@@ -61,10 +62,11 @@ it("sends a response", () => {
   expect.assertions(2);
   const req = loadFixture("carbon_zip");
 
-  return new Promise((resolve, reject) => {
+  return new Promise<MockResponse>((resolve, reject) => {
     const resp = new MockResponse(resolve);
     triggers.webhook(req, resp);
-  }).then((resp) => {
+    return resp;
+  }).then((resp: MockResponse) => {
     expect(resp.statusCode).toBe(200);
     expect(resp.body).toBe("hello world");
   })
