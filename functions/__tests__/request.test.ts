@@ -68,6 +68,6 @@ it("sends a response", () => {
     return resp;
   }).then((resp: MockResponse) => {
     expect(resp.statusCode).toBe(200);
-    expect(resp.body).toBe("hello world");
+    expect((resp.body as any).speech).toMatch(/\<speak\>In your area, the electricity is generated using \d+\.\d% fossil fuels leading to a carbon intensity of \d+\.\d+ gCO2eq\/kWh\.\<\/speak\>/);
   })
 });
