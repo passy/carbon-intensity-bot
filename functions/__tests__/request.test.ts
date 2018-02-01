@@ -55,16 +55,18 @@ const loadFixture = name => {
   return new MockRequest(headerV2, body);
 };
 
-it("sends a response", () => {
-  expect.assertions(2);
-  const req = loadFixture("carbon_zip");
+["carbon_zip", "carbon_latlon"].forEach(fixture => {
+  it(`sends produces a response for fixture ${fixture}`, () => {
+    expect.assertions(2);
+    const req = loadFixture(fixture);
 
-  return new Promise<MockResponse>((resolve, reject) => {
-    const resp = new MockResponse(resolve);
-    triggers.webhook(req, resp);
-    return resp;
-  }).then((resp: MockResponse) => {
-    expect(resp.statusCode).toBe(200);
-    expect((resp.body as any).speech).toMatch(/\<speak\>In your area, the electricity is generated using \d+\.\d% fossil fuels leading to a carbon intensity of \d+\.\d+ gCO2eq\/kWh\.\<\/speak\>/);
-  })
+    return new Promise<MockResponse>((resolve, reject) => {
+      const resp = new MockResponse(resolve);
+      triggers.webhook(req, resp);
+      return resp;
+    }).then((resp: MockResponse) => {
+      expect(resp.statusCode).toBe(200);
+      expect((resp.body as any).speech).toMatch(/\<speak\>In your area, the electricity is generated using \d+\.\d% fossil fuels leading to a carbon intensity of \d+\.\d+ gCO2eq\/kWh\.\<\/speak\>/);
+    })
+  });
 });
