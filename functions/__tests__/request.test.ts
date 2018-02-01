@@ -1,7 +1,6 @@
 import * as triggers from "../lib/index.js";
 import * as fs from "fs";
 import * as path from "path";
-import * as XHR from "xhr2";
 import {
   MockRequest,
   headerV2
@@ -57,8 +56,6 @@ const loadFixture = name => {
 };
 
 it("sends a response", () => {
-  // TODO: Figure out why this is necessary.
-  new XHR();
   expect.assertions(2);
   const req = loadFixture("carbon_zip");
 
