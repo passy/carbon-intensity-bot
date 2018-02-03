@@ -153,6 +153,13 @@ declare interface Co2Response {
   readonly value0: Co2Data;
 }
 
+const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
+  lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
+    .then((res: Co2Response) => {
+      return app.tell(Responses.sayIntensity(res));
+    });
+};
+
 const Flows = new Map([
   [Actions.UNKNOWN_INTENT, (app: DialogflowApp) => {
     return app.tell(Responses.errorUnknownIntent());
@@ -207,13 +214,6 @@ const Flows = new Map([
     app.tell(Responses.welcome())
   ]
 ]);
-
-const respondWithCountryCode = (app: DialogflowApp, countryCode: String) => {
-  lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
-    .then((res: Co2Response) => {
-      return app.tell(Responses.sayIntensity(res));
-    });
-};
 
 export const webhook = functions.https.onRequest((request, response) => {
   const app = new actions.DialogflowApp({ request, response });

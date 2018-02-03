@@ -55,7 +55,7 @@ const loadFixture = name => {
   return new MockRequest(headerV2, body);
 };
 
-["carbon_zip", "carbon_latlon"].forEach(fixture => {
+["carbon_zip", "carbon_latlon", "carbon_userstorage"].forEach(fixture => {
   it(`sends produces a response for fixture ${fixture}`, () => {
     expect.assertions(2);
     const req = loadFixture(fixture);
