@@ -109,36 +109,32 @@ const ssml = (
 const Actions = {
   WELCOME: "input.welcome",
   REQUEST_LOC_PERMISSION: "request.location.permission",
-  UNHANDLED_DEEP_LINK: "error.deeplink",
   UNKNOWN_INTENT: "error.unknown_intent",
   READ_CARBON_INTENSITY: "carbon.read",
+  UNHANDLED_DEEP_LINK: "error.deeplink",
 };
 
 const Responses = {
-  welcome: () => {
-    return ssml`<speak>
+  welcome: () =>
+    ssml`<speak>
       Hi, I'm the Carbon Intensity bot. Would you like me to tell you your local carbon intensity or fossil fuel usage?
-    </speak>`;
-  },
-  errorUnknownIntent: () => {
-    return ssml`<speak>
+    </speak>`,
+  errorUnknownIntent: () =>
+    ssml`<speak>
       Woops!
       <break time="500ms"/>
       Sorry about this, but I can't quite figure out what you meant.
       Can you say that again?
-    </speak>`;
-  },
-  permissionReason: () => {
-    return 'To find out your local electricity source'
-  },
-  sayIntensity: (res: Co2Response) => {
-    return ssml`<speak>
+    </speak>`,
+  permissionReason: () =>
+    'To find out your local electricity source',
+  sayIntensity: (res: Co2Response) =>
+    ssml`<speak>
       In your area, the electricity is generated
       using ${res.value0.fossilFuelPercentage.toFixed(1)}%
       fossil fuels leading to a carbon intensity of
       ${res.value0.carbonIntensity.toFixed(1)} ${res.value0.carbonIntensityUnit}.
-    </speak>`;
-  }
+    </speak>`,
 };
 
 declare interface Co2Data {
@@ -170,6 +166,8 @@ const Flows = new Map([
     if (!app.userStorage.location) {
       return app.askForPermission(Responses.permissionReason(), requestedPermission);
     }
+
+    return Promise.reject(new Error('Invalid permission request'));
   }],
   [Actions.READ_CARBON_INTENSITY, (app) => {
     if (!app.isPermissionGranted()) {
@@ -200,6 +198,9 @@ const Flows = new Map([
           return app.tell(Responses.sayIntensity(res));
         });
   }],
+  [Actions.UNHANDLED_DEEP_LINK, (app) =>
+    app.tell(Responses.welcome())
+  ]
 ]);
 
 export const webhook = functions.https.onRequest((request, response) => {
