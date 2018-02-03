@@ -5,6 +5,7 @@ import * as actions from "actions-on-google";
 import * as maps from "@google/maps";
 // @ts-ignore
 import * as lib from "./lib.purs";
+import { DialogflowApp } from "actions-on-google/dialogflow-app";
 
 /**
  * For geocoding city + ZIP, I could do something like this:
@@ -117,7 +118,7 @@ const Actions = {
 const Responses = {
   welcome: () =>
     ssml`<speak>
-      Hi, I'm the Carbon Intensity bot. Would you like me to tell you your local carbon intensity or fossil fuel usage?
+      Hi, I'm Carbon Intensity bot. Would you like me to tell you your local carbon intensity or fossil fuel usage?
     </speak>`,
   errorUnknownIntent: () =>
     ssml`<speak>
@@ -144,32 +145,37 @@ declare interface Co2Data {
   readonly carbonIntensityUnit: string;
 }
 
+declare interface UserStorage {
+  countryCode: string;
+}
+
 declare interface Co2Response {
   readonly value0: Co2Data;
 }
 
 const Flows = new Map([
-  [Actions.UNKNOWN_INTENT, (app) => {
+  [Actions.UNKNOWN_INTENT, (app: DialogflowApp) => {
     return app.tell(Responses.errorUnknownIntent());
   }],
-  [Actions.WELCOME, (app) => {
+  [Actions.WELCOME, (app: DialogflowApp) => {
     return app.ask(Responses.welcome());
   }],
-  [Actions.REQUEST_LOC_PERMISSION, (app) => {
+  [Actions.REQUEST_LOC_PERMISSION, (app: DialogflowApp) => {
     const permissions = app.SupportedPermissions;
     // If the request comes from a phone, we can't use coarse location.
     const requestedPermission = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT)
       ? permissions.DEVICE_PRECISE_LOCATION
       : permissions.DEVICE_COARSE_LOCATION;
 
-    app.data.requestedPermission = requestedPermission;
-    if (!app.userStorage.location) {
-      return app.askForPermission(Responses.permissionReason(), requestedPermission);
+    (app.data as any).requestedPermission = requestedPermission;
+    const countryCode = (app.userStorage as UserStorage).countryCode;
+    if (!countryCode) {
+      return app.askForPermission(Responses.permissionReason(), requestedPermission as any);
     }
 
-    return Promise.reject(new Error('Invalid permission request'));
+    return respondWithCountryCode(app, countryCode);
   }],
-  [Actions.READ_CARBON_INTENSITY, (app) => {
+  [Actions.READ_CARBON_INTENSITY, (app: DialogflowApp) => {
     if (!app.isPermissionGranted()) {
       return Promise.reject(new Error('Permission not granted'));
     }
@@ -177,7 +183,7 @@ const Flows = new Map([
     const mapsClient = maps.createClient({
       key: functions.config().geocoding.key,
     });
-    const requestedPermission = app.data.requestedPermission;
+    const requestedPermission = (app.data as any).requestedPermission;
     const permissions = app.SupportedPermissions;
 
     let coordinatesP;
@@ -193,17 +199,23 @@ const Flows = new Map([
     }
 
     return coordinatesP.then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
-        .then(countryCode => lib.requestCo2Country(functions.config().co2signal.key, countryCode)())
-        .then((res: Co2Response) => {
-          return app.tell(Responses.sayIntensity(res));
-        });
+        // Yes, this is as bad as it looks. Some magic object we can write to and is somehow persisted in the CLOUD.
+        .then(countryCode => { (app.userStorage as UserStorage).countryCode = countryCode; return countryCode; })
+        .then(respondWithCountryCode.bind(null, app));
   }],
   [Actions.UNHANDLED_DEEP_LINK, (app) =>
     app.tell(Responses.welcome())
   ]
 ]);
 
+const respondWithCountryCode = (app: DialogflowApp, countryCode: String) => {
+  lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
+    .then((res: Co2Response) => {
+      return app.tell(Responses.sayIntensity(res));
+    });
+};
+
 export const webhook = functions.https.onRequest((request, response) => {
   const app = new actions.DialogflowApp({ request, response });
-  return app.handleRequestAsync(Flows);
+  return app.handleRequestAsync(Flows as any);
 });
