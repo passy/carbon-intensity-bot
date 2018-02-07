@@ -17,6 +17,7 @@ class MockResponse {
     this.statusCode = 200;
     this.headers = new Map();
     this.resolve = resolve;
+    this.body = '';
   }
 
   status (statusCode: number) {
