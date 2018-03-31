@@ -13,9 +13,9 @@
   "dependencies": {
     "@google/maps": "^0.4.5",
     "actions-on-google": "^1.8.0",
-    "firebase-admin": "~5.9.0",
-    "firebase-functions": "^0.8.0",
-    "fork-ts-checker-webpack-plugin": "^0.3.0",
+    "firebase-admin": "~5.11.0",
+    "firebase-functions": "^0.9.1",
+    "fork-ts-checker-webpack-plugin": "^0.4.1",
     "xhr2": "^0.1.4"
   },
   "devDependencies": {
@@ -26,10 +26,10 @@
     "purescript-psa": "^0.6.0",
     "purs-loader": "^3.1.2",
     "ts-jest": "^22.0.0",
-    "ts-loader": "^3.2.0",
+    "ts-loader": "^4.1.0",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3",
-    "webpack": "^3.10.0",
+    "webpack": "^4.4.1",
     "webpack-node-externals": "^1.6.0"
   },
   "private": true,
