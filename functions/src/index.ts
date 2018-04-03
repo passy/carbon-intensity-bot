@@ -129,6 +129,12 @@ const Responses = {
     </speak>`,
   permissionReason: () =>
     'To find out your local electricity source',
+  unsupportedRegion: () =>
+    ssml`<speak>
+      For your region we don't have reliable information at the moment.
+      <break time="300ms" />
+      Sorry about that!
+    </speak>`,
   sayIntensity: (res: Co2Response) =>
     ssml`<speak>
       In your area, the electricity is generated
