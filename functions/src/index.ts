@@ -230,3 +230,6 @@ export const webhook = functions.https.onRequest((request, response) => {
   const app = new actions.DialogflowApp({ request, response });
   return app.handleRequestAsync(Flows as any);
 });
+
+// Visible for testing.
+export const decodeCo2Response = lib.decodeCo2Response;

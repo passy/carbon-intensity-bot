@@ -55,7 +55,8 @@ instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF (Maybe Co2ResponseDat
 
     data' <- obj .? "data"
     carbonIntensity :: Maybe Number <- data' .?? "carbonIntensity"
-    fossilFuelPercentage :: Maybe Number <- data' .?? "fossilFuelPercentage"
+    -- fossilFuelPercentage :: Maybe Number <- data' .?? "fossilFuelPercentage"
+    let fossilFuelPercentage = Just 6.0
 
     let carbonData' = { carbonIntensity: _, fossilFuelPercentage: _ } <$> carbonIntensity <*> fossilFuelPercentage
     let carbonData = Co2ResponseData <$> carbonData'
