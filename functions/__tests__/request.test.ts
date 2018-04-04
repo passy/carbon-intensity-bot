@@ -1,4 +1,4 @@
-import * as triggers from "../lib/index.js";
+import * as triggers from "../src/index";
 import * as fs from "fs";
 import * as path from "path";
 import {
@@ -63,7 +63,7 @@ const loadFixture = name => {
 
     return new Promise<MockResponse>((resolve, reject) => {
       const resp = new MockResponse(resolve);
-      triggers.webhook(req, resp);
+      triggers.webhook(req, resp as any);
       return resp;
     }).then((resp: MockResponse) => {
       expect(resp.statusCode).toBe(200);

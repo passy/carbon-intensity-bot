@@ -5,10 +5,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     entry: './src/index.ts',
-    output: {
-        filename: 'lib/index.js',
-        libraryTarget: 'this',
-    },
     target: 'node',
     module: {
         rules: [

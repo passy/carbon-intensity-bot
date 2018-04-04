@@ -1,6 +1,7 @@
 module Lib
     ( requestCo2LatLon
     , requestCo2Country
+    , decodeCo2Response
     , Co2ResponseF
     , Co2Response
     , Co2ResponseData
