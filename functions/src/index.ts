@@ -163,6 +163,9 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
     .then((res: Co2Response) => {
       return app.tell(Responses.sayIntensity(res));
+    }).catch(err => {
+      console.error('err: ' + err);
+      throw err;
     });
 };
 
@@ -211,7 +214,9 @@ const Flows = new Map([
       coordinatesP = Promise.reject(new Error('Unrecognized permission'));
     }
 
-    return coordinatesP.then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
+    return coordinatesP
+       .then(coordinates => { console.error('coords: ' + coordinates); return coordinates; })
+       .then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
         // Yes, this is as bad as it looks. Some magic object we can write to and is somehow persisted in the CLOUD.
         .then(countryCode => { (app.userStorage as UserStorage).countryCode = countryCode; return countryCode; })
         .then(respondWithCountryCode.bind(null, app));
