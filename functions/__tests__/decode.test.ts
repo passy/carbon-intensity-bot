@@ -1,4 +1,4 @@
-import * as lib from "../src/index";
+import * as lib from "../lib/index";
 import * as fs from "fs";
 import * as path from "path";
 

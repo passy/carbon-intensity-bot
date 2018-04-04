@@ -1,4 +1,4 @@
-import * as triggers from "../src/index";
+import * as triggers from "../lib/index";
 import * as fs from "fs";
 import * as path from "path";
 import {
