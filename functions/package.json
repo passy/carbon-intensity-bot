@@ -9,7 +9,7 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
-  "main": "dist/main.js",
+  "main": "lib/index.js",
   "dependencies": {
     "@google/maps": "^0.4.6",
     "actions-on-google": "^1.10.0",
