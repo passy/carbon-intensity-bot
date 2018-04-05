@@ -50,7 +50,6 @@ data Co2ResponseData = Co2ResponseData
 data ResponseError = ErrDecode String
                    | ErrStatusCode Int String
                    | ErrIncompleteResponse
-                   | ErrWat
 
 derive instance genericResponseError :: Generic ResponseError _
 

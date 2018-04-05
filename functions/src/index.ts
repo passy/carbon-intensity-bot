@@ -135,6 +135,12 @@ const Responses = {
       <break time="300ms" />
       Sorry about that!
     </speak>`,
+  unexpectedStatusCode: (status: number, response: string) =>
+    ssml`<speak>
+      Oh no, something broke. This is what we've got back from the server:
+      <break time="100ms" />
+      ${response}
+    </speak>`,
   sayIntensity: (res: Co2Response) =>
     ssml`<speak>
       In your area, the electricity is generated
@@ -164,10 +170,15 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
     .then((res: { value0: Co2Response }) => {
       return app.tell(Responses.sayIntensity(res.value0));
     }).catch((err: Error) => {
-      if (err.message === "Incomplete response") {
-        return app.tell(Responses.unsupportedRegion());
-      } else {
-        throw err;
+      const errObj = JSON.parse(err.message);
+      console.error('Caught error response: ', err.message);
+      switch (errObj.tag) {
+        case "ErrIncompleteResponse":
+          return app.tell(Responses.unsupportedRegion());
+        case "ErrStatusCode":
+          return app.tell(Responses.unexpectedStatusCode(errObj.value0, errObj.value1));
+        default:
+          throw err;
       }
     });
 };
