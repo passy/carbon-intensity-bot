@@ -163,10 +163,8 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
     .then((res: { value0: Co2Response }) => {
       return app.tell(Responses.sayIntensity(res.value0));
-    }).catch(err => {
-      console.log('PASSY ERR', JSON.stringify(err));
-      // TODO: Share constant with Purs module
-      if (err.toString().indexOf("Incomplete response") >= 0) {
+    }).catch((err: Error) => {
+      if (err.message === "Incomplete response") {
         return app.tell(Responses.unsupportedRegion());
       } else {
         throw err;
