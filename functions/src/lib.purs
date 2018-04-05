@@ -58,7 +58,7 @@ instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF (Maybe Co2ResponseDat
     carbonIntensity :: Maybe Number <- data' .?? "carbonIntensity"
     maybeFossilFuelPercentage :: Maybe (Maybe Number) <- data' .?? "fossilFuelPercentage"
 
-    let fossilFuelPercentage :: Maybe Number
+    let fossilFuelPercentage :: Maybe Number 
         fossilFuelPercentage = join maybeFossilFuelPercentage
     let carbonData' = { carbonIntensity: _, fossilFuelPercentage: _ } <$> carbonIntensity <*> fossilFuelPercentage
     let carbonData = Co2ResponseData <$> carbonData'

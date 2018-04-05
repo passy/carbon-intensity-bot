@@ -161,11 +161,15 @@ declare interface Co2Response {
 
 const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
-    .then((res: Co2Response) => {
-      return app.tell(Responses.sayIntensity(res));
+    .then((res: { value0: Co2Response }) => {
+      return app.tell(Responses.sayIntensity(res.value0));
     }).catch(err => {
-      console.error('err: ' + err);
-      throw err;
+      // TODO: Share constant with Purs module
+      if (err === "Incomplete response") {
+        return app.tell(Responses.unsupportedRegion());
+      } else {
+        throw err;
+      }
     });
 };
 
@@ -215,7 +219,6 @@ const Flows = new Map([
     }
 
     return coordinatesP
-       .then(coordinates => { console.error('coords: ' + coordinates); return coordinates; })
        .then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
         // Yes, this is as bad as it looks. Some magic object we can write to and is somehow persisted in the CLOUD.
         .then(countryCode => { (app.userStorage as UserStorage).countryCode = countryCode; return countryCode; })
@@ -230,6 +233,3 @@ export const webhook = functions.https.onRequest((request, response) => {
   const app = new actions.DialogflowApp({ request, response });
   return app.handleRequestAsync(Flows as any);
 });
-
-// Visible for testing.
-export const decodeCo2Response = lib.decodeCo2Response;
