@@ -8,6 +8,7 @@ module Lib
     , ApiToken
     , CountryCode
     , LatLon
+    , ResponseError(..)
     ) where
 
 import Prelude
@@ -17,10 +18,12 @@ import Control.Monad.Eff (Eff)
 import Control.Promise as Promise
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.?), (.??))
+import Data.Bifunctor (lmap)
 import Data.Either (Either(Left, Right))
+import Data.Foreign.Generic (defaultOptions, genericEncodeJSON)
 import Data.Function.Uncurried (Fn2, mkFn2)
+import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(Just, Nothing))
-import Debug.Trace (spy)
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
 import Network.HTTP.StatusCode (StatusCode(..))
@@ -44,6 +47,13 @@ data Co2ResponseData = Co2ResponseData
     , fossilFuelPercentage :: Number
     }
 
+data ResponseError = ErrDecode String
+                   | ErrStatusCode Int String
+                   | ErrIncompleteResponse
+                   | ErrWat
+
+derive instance genericResponseError :: Generic ResponseError _
+
 type Co2Response = Co2ResponseF Co2ResponseData
 type PartialCo2Response = Co2ResponseF (Maybe Co2ResponseData)
 
@@ -65,12 +75,12 @@ instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF (Maybe Co2ResponseDat
 
     pure $ Co2Response { countryCode, carbonIntensityUnit, carbonData }
 
-decodeCo2Response :: Json -> Either String Co2Response
+decodeCo2Response :: Json -> Either ResponseError Co2Response
 decodeCo2Response json = do
-    (Co2Response obj) :: PartialCo2Response <- decodeJson json
+    (Co2Response obj) :: PartialCo2Response <- decodeJson json # lmap ErrDecode
     case obj.carbonData of
         Just d -> Right $ Co2Response $ { countryCode: obj.countryCode, carbonIntensityUnit: obj.carbonIntensityUnit, carbonData: d }
-        Nothing -> Left "Incomplete response"
+        Nothing -> Left ErrIncompleteResponse
 
 requestCo2LatLonAff :: forall e a. Respondable a => LatLon -> ApiToken -> Affjax e a
 requestCo2LatLonAff (LatLon l) (ApiToken token) =
@@ -84,12 +94,12 @@ requestCo2CountryAff (CountryCode code) (ApiToken token) =
 getCo2Aff
     :: forall eff
     .  Affjax eff Json
-    -> Aff (ajax :: AJAX | eff) (Either String Co2Response)
+    -> Aff (ajax :: AJAX | eff) (Either ResponseError Co2Response)
 getCo2Aff req = do
   { status, response } <- req
-  when (status /= StatusCode 200) $
-    throwError $ error $ "Response code " <> show status <> " /= 200: " <> show response
-  pure $ decodeCo2Response $ spy response
+  pure $ case status of
+    StatusCode 200 -> decodeCo2Response response
+    StatusCode n -> Left $ ErrStatusCode n (show response)
 
 requestCo2
     :: forall eff
@@ -98,7 +108,7 @@ requestCo2
     -> Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response)
 requestCo2 fn token = Promise.fromAff $ do
     getCo2Aff (fn token) >>= case _ of
-        Left e -> throwError $ error e
+        Left e -> throwError $ error $ genericEncodeJSON defaultOptions e
         Right res -> pure res
 
 requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
