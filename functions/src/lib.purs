@@ -7,7 +7,8 @@ module Lib
     , Co2ResponseData
     , ApiToken
     , CountryCode
-    , LatLon ) where
+    , LatLon
+    ) where
 
 import Prelude
 
@@ -16,7 +17,7 @@ import Control.Monad.Eff (Eff)
 import Control.Promise as Promise
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.?), (.??))
-import Data.Either (Either(Right, Left))
+import Data.Either (Either(Left, Right))
 import Data.Function.Uncurried (Fn2, mkFn2)
 import Data.Maybe (Maybe(Just, Nothing))
 import Debug.Trace (spy)
@@ -55,9 +56,10 @@ instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF (Maybe Co2ResponseDat
 
     data' <- obj .? "data"
     carbonIntensity :: Maybe Number <- data' .?? "carbonIntensity"
-    -- fossilFuelPercentage :: Maybe Number <- data' .?? "fossilFuelPercentage"
-    let fossilFuelPercentage = Just 6.0
+    maybeFossilFuelPercentage :: Maybe (Maybe Number) <- data' .?? "fossilFuelPercentage"
 
+    let fossilFuelPercentage :: Maybe Number
+        fossilFuelPercentage = join maybeFossilFuelPercentage
     let carbonData' = { carbonIntensity: _, fossilFuelPercentage: _ } <$> carbonIntensity <*> fossilFuelPercentage
     let carbonData = Co2ResponseData <$> carbonData'
 
