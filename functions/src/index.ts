@@ -135,6 +135,12 @@ const Responses = {
       <break time="300ms" />
       Sorry about that!
     </speak>`,
+  unexpectedStatusCode: (status: number, response: string) =>
+    ssml`<speak>
+      Oh no, something broke. This is what we've got back from the server:
+      <break time="100ms" />
+      ${response}
+    </speak>`,
   sayIntensity: (res: Co2Response) =>
     ssml`<speak>
       In your area, the electricity is generated
@@ -153,6 +159,7 @@ declare interface Co2Data {
 
 declare interface UserStorage {
   countryCode: string;
+  lastUpdated: number;
 }
 
 declare interface Co2Response {
@@ -161,8 +168,19 @@ declare interface Co2Response {
 
 const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
-    .then((res: Co2Response) => {
-      return app.tell(Responses.sayIntensity(res));
+    .then((res: { value0: Co2Response }) => {
+      return app.tell(Responses.sayIntensity(res.value0));
+    }).catch((err: Error) => {
+      const errObj = JSON.parse(err.message);
+      console.error('Caught error response: ', err.message);
+      switch (errObj.tag) {
+        case "ErrIncompleteResponse":
+          return app.tell(Responses.unsupportedRegion());
+        case "ErrStatusCode":
+          return app.tell(Responses.unexpectedStatusCode(errObj.value0, errObj.value1));
+        default:
+          throw err;
+      }
     });
 };
 
@@ -211,10 +229,24 @@ const Flows = new Map([
       coordinatesP = Promise.reject(new Error('Unrecognized permission'));
     }
 
-    return coordinatesP.then(coordinates => coordinatesToCountryCode(mapsClient, coordinates.latitude, coordinates.longitude))
+    return (
+      coordinatesP
+        .then(coordinates =>
+          coordinatesToCountryCode(
+            mapsClient,
+            coordinates.latitude,
+            coordinates.longitude
+          )
+        )
         // Yes, this is as bad as it looks. Some magic object we can write to and is somehow persisted in the CLOUD.
-        .then(countryCode => { (app.userStorage as UserStorage).countryCode = countryCode; return countryCode; })
-        .then(respondWithCountryCode.bind(null, app));
+        .then(countryCode => {
+          const us = app.userStorage as UserStorage;
+          us.lastUpdated = Date.now();
+          us.countryCode = countryCode;
+          return countryCode;
+        })
+        .then(respondWithCountryCode.bind(null, app))
+    );
   }],
   [Actions.UNHANDLED_DEEP_LINK, (app) =>
     app.tell(Responses.welcome())
