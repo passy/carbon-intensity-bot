@@ -172,11 +172,11 @@ declare interface Co2Response {
 
 const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
-    .then((res: { value0: Co2Response }) => {
-      return app.tell(Responses.sayIntensity(res.value0));
+    .then((res: Co2Response) => {
+      return app.tell(Responses.sayIntensity(res));
     }).catch((err: Error) => {
-      const errObj = JSON.parse(err.message);
       console.error('Caught error response: ', err.message);
+      const errObj = JSON.parse(err.message);
       switch (errObj.tag) {
         case "ErrIncompleteResponse":
           return app.tell(Responses.unsupportedRegion());
