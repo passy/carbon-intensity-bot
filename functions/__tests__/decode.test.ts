@@ -16,4 +16,5 @@ it('parses a full JSON response', () => {
   expect(r).toBeInstanceOf(Either.Right);
   // We can't get this exported.
   expect(r.value0.constructor.name).toEqual("Co2Response");
+  expect(r.value0).toHaveProperty('value0.carbonData.value0.carbonIntensity', 273.4587121483331);
 });

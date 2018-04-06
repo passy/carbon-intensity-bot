@@ -144,17 +144,21 @@ const Responses = {
   sayIntensity: (res: Co2Response) =>
     ssml`<speak>
       In your area, the electricity is generated
-      using ${res.value0.fossilFuelPercentage.toFixed(1)}%
+      using ${res.value0.carbonData.value0.fossilFuelPercentage.toFixed(1)}%
       fossil fuels leading to a carbon intensity of
-      ${res.value0.carbonIntensity.toFixed(1)} ${res.value0.carbonIntensityUnit}.
+      ${res.value0.carbonData.value0.carbonIntensity.toFixed(1)} ${res.value0.carbonIntensityUnit}.
     </speak>`,
 };
 
+declare interface Co2InnerData {
+  readonly fossilFuelPercentage: number;
+  readonly carbonIntensity: number;
+}
+
 declare interface Co2Data {
   readonly countryCode: string;
-  readonly carbonIntensity: number;
-  readonly fossilFuelPercentage: number;
   readonly carbonIntensityUnit: string;
+  readonly carbonData: { value0: Co2InnerData };
 }
 
 declare interface UserStorage {
@@ -254,6 +258,7 @@ const Flows = new Map([
 ]);
 
 export const webhook = functions.https.onRequest((request, response) => {
+  process.on('unhandledRejection', r => console.error(r));
   const app = new actions.DialogflowApp({ request, response });
   return app.handleRequestAsync(Flows as any);
 });
