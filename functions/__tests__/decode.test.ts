@@ -1,7 +1,5 @@
 import * as lib from "../output/Lib";
 import * as Either from "../output/Data.Either";
-import * as fs from "fs";
-import * as path from "path";
 
 it('parses a partial JSON response', () => {
   const r = lib.decodeCo2Response(JSON.parse('{"_disclaimer":"This data is the exclusive property of Tomorrow and/or related parties. If you\'re in doubt about your rights to use this data, please contact hello@tmrow.com","status":"ok","countryCode":"US","data":{"fossilFuelPercentage":null},"units":{"carbonIntensity":"gCO2eq/kWh"}}'));
