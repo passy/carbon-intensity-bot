@@ -188,6 +188,13 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
     });
 };
 
+const WEEK_IN_MS: number = 60 * 60 * 24 * 7 * 1000
+
+const isStorageExpired = (storage: UserStorage): boolean =>
+  storage.lastUpdated !== undefined
+    && storage.lastUpdated > 0
+    && (Date.now() - storage.lastUpdated > WEEK_IN_MS)
+
 const Flows = new Map([
   [Actions.UNKNOWN_INTENT, (app: DialogflowApp) => {
     return app.tell(Responses.errorUnknownIntent());
@@ -203,8 +210,9 @@ const Flows = new Map([
       : permissions.DEVICE_COARSE_LOCATION;
 
     (app.data as any).requestedPermission = requestedPermission;
-    const countryCode = (app.userStorage as UserStorage).countryCode;
-    if (!countryCode) {
+    const storage = app.userStorage as UserStorage;
+    const countryCode = storage.countryCode;
+    if (!countryCode || isStorageExpired(storage)) {
       return app.askForPermission(Responses.permissionReason(), requestedPermission as any);
     }
 
