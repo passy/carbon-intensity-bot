@@ -33,6 +33,6 @@ module.exports = {
     },
     externals: [nodeExternals()],
     plugins: [
-        new ForkTsCheckerWebpackPlugin()
+        // new ForkTsCheckerWebpackPlugin()
     ],
 };

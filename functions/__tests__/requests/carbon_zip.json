@@ -1,1 +1,104 @@
-{"originalRequest":{"source":"google","version":"2","data":{"isInSandbox":true,"surface":{"capabilities":[{"name":"actions.capability.AUDIO_OUTPUT"},{"name":"actions.capability.MEDIA_RESPONSE_AUDIO"}]},"inputs":[{"rawInputs":[{"query":"yes","inputType":"VOICE"}],"arguments":[{"textValue":"true","name":"PERMISSION","boolValue":true}],"intent":"actions.intent.PERMISSION"}],"user":{"userStorage":"{\"data\":{}}","lastSeen":"2018-01-14T15:18:48Z","permissions":["DEVICE_COARSE_LOCATION"],"locale":"en-US","userId":"redacted"},"device":{"location":{"zipCode":"WC1H 0PL","city":"London"}},"conversation":{"conversationId":"1515943172646","type":"ACTIVE","conversationToken":"[\"_actions_on_google_\"]"},"availableSurfaces":[{"capabilities":[{"name":"actions.capability.SCREEN_OUTPUT"},{"name":"actions.capability.AUDIO_OUTPUT"}]}]}},"id":"redacted","timestamp":"2018-01-14T15:19:42.172Z","lang":"en-us","result":{"source":"agent","resolvedQuery":"actions_intent_PERMISSION","speech":"","action":"carbon.read","actionIncomplete":false,"parameters":{},"contexts":[{"name":"_actions_on_google_","parameters":{"requestedPermission":"DEVICE_COARSE_LOCATION"},"lifespan":99},{"name":"actions_intent_permission","parameters":{"PERMISSION":true},"lifespan":0},{"name":"google_assistant_input_type_voice","parameters":{},"lifespan":0},{"name":"actions_capability_audio_output","parameters":{},"lifespan":0},{"name":"actions_capability_media_response_audio","parameters":{},"lifespan":0}],"metadata":{"intentId":"e9fa22b9-0e11-4b95-b84d-02e5478664ee","webhookUsed":"true","webhookForSlotFillingUsed":"false","nluResponseTime":0,"intentName":"handle_permission"},"fulfillment":{"speech":"This is strange! I could not read your mind! I must rest and practice using my powers!","messages":[{"type":0,"speech":"This is strange! I could not read your mind! I must rest and practice using my powers!"}]},"score":1},"status":{"code":200,"errorType":"success","webhookTimedOut":false},"sessionId":"1515943172646"}
+{
+  "originalRequest": {
+    "source": "google",
+    "version": "2",
+    "data": {
+      "isInSandbox": true,
+      "surface": {
+        "capabilities": [
+          { "name": "actions.capability.AUDIO_OUTPUT" },
+          { "name": "actions.capability.MEDIA_RESPONSE_AUDIO" }
+        ]
+      },
+      "inputs": [
+        {
+          "rawInputs": [{ "query": "yes", "inputType": "VOICE" }],
+          "arguments": [
+            { "textValue": "true", "name": "PERMISSION", "boolValue": true }
+          ],
+          "intent": "actions.intent.PERMISSION"
+        }
+      ],
+      "user": {
+        "userStorage": "{\"data\":{}}",
+        "lastSeen": "2018-01-14T15:18:48Z",
+        "permissions": ["DEVICE_COARSE_LOCATION"],
+        "locale": "en-US",
+        "userId": "redacted"
+      },
+      "device": { "location": { "zipCode": "WC1H 0PL", "city": "London" } },
+      "conversation": {
+        "conversationId": "1515943172646",
+        "type": "ACTIVE",
+        "conversationToken": "[\"_actions_on_google_\"]"
+      },
+      "availableSurfaces": [
+        {
+          "capabilities": [
+            { "name": "actions.capability.SCREEN_OUTPUT" },
+            { "name": "actions.capability.AUDIO_OUTPUT" }
+          ]
+        }
+      ]
+    }
+  },
+  "id": "redacted",
+  "timestamp": "2018-01-14T15:19:42.172Z",
+  "lang": "en-us",
+  "result": {
+    "source": "agent",
+    "resolvedQuery": "actions_intent_PERMISSION",
+    "speech": "",
+    "action": "carbon.read",
+    "actionIncomplete": false,
+    "parameters": {},
+    "contexts": [
+      {
+        "name": "_actions_on_google_",
+        "parameters": { "requestedPermission": "DEVICE_COARSE_LOCATION" },
+        "lifespan": 99
+      },
+      {
+        "name": "actions_intent_permission",
+        "parameters": { "PERMISSION": true },
+        "lifespan": 0
+      },
+      {
+        "name": "google_assistant_input_type_voice",
+        "parameters": {},
+        "lifespan": 0
+      },
+      {
+        "name": "actions_capability_audio_output",
+        "parameters": {},
+        "lifespan": 0
+      },
+      {
+        "name": "actions_capability_media_response_audio",
+        "parameters": {},
+        "lifespan": 0
+      }
+    ],
+    "metadata": {
+      "intentId": "e9fa22b9-0e11-4b95-b84d-02e5478664ee",
+      "webhookUsed": "true",
+      "webhookForSlotFillingUsed": "false",
+      "nluResponseTime": 0,
+      "intentName": "handle_permission"
+    },
+    "fulfillment": {
+      "speech":
+        "This is strange! I could not read your mind! I must rest and practice using my powers!",
+      "messages": [
+        {
+          "type": 0,
+          "speech":
+            "This is strange! I could not read your mind! I must rest and practice using my powers!"
+        }
+      ]
+    },
+    "score": 1
+  },
+  "status": { "code": 200, "errorType": "success", "webhookTimedOut": false },
+  "sessionId": "1515943172646"
+}

@@ -176,7 +176,16 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
       return app.tell(Responses.sayIntensity(res));
     }).catch((err: Error) => {
       console.error('Caught error response: ', err.message);
-      const errObj = JSON.parse(err.message);
+
+      let errObj;
+      try {
+        // We can't distinguish between different forms of errors
+        // so this can also be a syntax error or some junk like that.
+        errObj = JSON.parse(err.message);
+      } catch (_e) {
+        throw err;
+      }
+
       switch (errObj.tag) {
         case "ErrIncompleteResponse":
           return app.tell(Responses.unsupportedRegion());
@@ -192,7 +201,7 @@ const WEEK_IN_MS: number = 60 * 60 * 24 * 7 * 1000
 
 const isStorageExpired = (storage: UserStorage): boolean =>
   storage.lastUpdated !== undefined
-    && storage.lastUpdated > 0
+    && storage.lastUpdated > 0 
     && (Date.now() - storage.lastUpdated > WEEK_IN_MS)
 
 const Flows = new Map([
