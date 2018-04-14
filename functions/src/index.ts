@@ -138,9 +138,7 @@ const Responses = {
     </speak>`,
   unexpectedStatusCode: (status: number, response: string) =>
     ssml`<speak>
-      Oh no, something broke. This is what we've got back from the server:
-      <break time="100ms" />
-      ${response}
+      Oh no, something broke. Sorry that I can't help you right now. Please try again later.
     </speak>`,
   sayIntensity: (res: Co2Response) =>
     ssml`<speak>
@@ -191,7 +189,7 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
         case "ErrIncompleteResponse":
           return app.tell(Responses.unsupportedRegion());
         case "ErrStatusCode":
-          return app.tell(Responses.unexpectedStatusCode(errObj.value0, errObj.value1));
+          return app.tell(Responses.unexpectedStatusCode(errObj.contents[0], errObj.contents[1]));
         default:
           throw err;
       }
