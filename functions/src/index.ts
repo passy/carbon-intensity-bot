@@ -6,6 +6,7 @@ import * as maps from "@google/maps";
 // @ts-ignore
 import * as lib from "./lib.purs";
 import { DialogflowApp } from "actions-on-google/dialogflow-app";
+import { Location } from "actions-on-google/assistant-app";
 
 /**
  * For geocoding city + ZIP, I could do something like this:

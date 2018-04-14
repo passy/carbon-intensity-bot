@@ -23,6 +23,7 @@ import Data.Either (Either(Left, Right))
 import Data.Foreign.Generic (defaultOptions, genericEncodeJSON)
 import Data.Function.Uncurried (Fn2, mkFn2)
 import Data.Generic.Rep (class Generic)
+import Data.Identity (Identity(..))
 import Data.Maybe (Maybe(Just, Nothing))
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
@@ -36,10 +37,10 @@ newtype LatLon = LatLon { lat :: Number, lon :: Number }
 baseUrl :: String
 baseUrl = "https://api.co2signal.com/v1/"
 
-data Co2ResponseF a = Co2Response
+data Co2ResponseF f = Co2Response
     { countryCode :: String
     , carbonIntensityUnit :: String
-    , carbonData :: a
+    , carbonData :: f Co2ResponseData
     }
 
 data Co2ResponseData = Co2ResponseData
@@ -53,10 +54,10 @@ data ResponseError = ErrDecode String
 
 derive instance genericResponseError :: Generic ResponseError _
 
-type Co2Response = Co2ResponseF Co2ResponseData
-type PartialCo2Response = Co2ResponseF (Maybe Co2ResponseData)
+type Co2Response = Co2ResponseF Identity
+type PartialCo2Response = Co2ResponseF Maybe
 
-instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF (Maybe Co2ResponseData)) where
+instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF Maybe) where
   decodeJson json = do
     obj <- decodeJson json
     countryCode <- obj .? "countryCode"
@@ -78,7 +79,7 @@ decodeCo2Response :: Json -> Either ResponseError Co2Response
 decodeCo2Response json = do
     (Co2Response obj) :: PartialCo2Response <- decodeJson json # lmap ErrDecode
     case obj.carbonData of
-        Just d -> Right $ Co2Response $ { countryCode: obj.countryCode, carbonIntensityUnit: obj.carbonIntensityUnit, carbonData: d }
+        Just d -> Right $ Co2Response $ { countryCode: obj.countryCode, carbonIntensityUnit: obj.carbonIntensityUnit, carbonData: Identity d }
         Nothing -> Left ErrIncompleteResponse
 
 requestCo2LatLonAff :: forall e a. Respondable a => LatLon -> ApiToken -> Affjax e a
