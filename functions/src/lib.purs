@@ -117,20 +117,20 @@ requestCo2
     :: forall eff
     .  (ApiToken -> Affjax eff Json)
     -> ApiToken
-    -> Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response)
+    -> Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse)
 requestCo2 fn token = Promise.fromAff $ do
     getCo2Aff (fn token) >>= case _ of
         Left e -> throwError $ error $ genericEncodeJSON defaultOptions e
-        Right res -> pure res
+        Right res -> pure $ responseToShared res
 
-requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2LatLon_ token l =
     requestCo2 (requestCo2LatLonAff l) token
 
-requestCo2LatLon :: forall eff. Fn2 ApiToken LatLon (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon :: forall eff. Fn2 ApiToken LatLon (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2LatLon = mkFn2 requestCo2LatLon_
 
-requestCo2Country_ :: forall eff. ApiToken -> CountryCode -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2Country_ :: forall eff. ApiToken -> CountryCode -> (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2Country_ token countryCode =
     requestCo2 (requestCo2CountryAff countryCode) token
 
