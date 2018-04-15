@@ -13,6 +13,7 @@ module Lib
 
 import Prelude
 
+import Control.Comonad (extract)
 import Control.Monad.Aff (Aff, throwError, error)
 import Control.Monad.Eff (Eff)
 import Control.Promise as Promise
@@ -28,6 +29,7 @@ import Data.Maybe (Maybe(Just, Nothing))
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
 import Network.HTTP.StatusCode (StatusCode(..))
+import Shared (SharedResponse(SharedResponse))
 
 newtype ApiToken = ApiToken URL
 newtype CountryCode = CountryCode String
@@ -56,6 +58,16 @@ derive instance genericResponseError :: Generic ResponseError _
 
 type Co2Response = Co2ResponseF Identity
 type PartialCo2Response = Co2ResponseF Maybe
+
+responseToShared :: Co2Response -> SharedResponse
+responseToShared (Co2Response r) =
+    let (Co2ResponseData d) = extract r.carbonData
+    in SharedResponse
+        { countryCode: r.countryCode
+        , carbonIntensityUnit: r.carbonIntensityUnit
+        , carbonIntensity: d.carbonIntensity
+        , fossilFuelPercentage: d.fossilFuelPercentage
+        }
 
 instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF Maybe) where
   decodeJson json = do
@@ -105,22 +117,22 @@ requestCo2
     :: forall eff
     .  (ApiToken -> Affjax eff Json)
     -> ApiToken
-    -> Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response)
+    -> Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse)
 requestCo2 fn token = Promise.fromAff $ do
     getCo2Aff (fn token) >>= case _ of
         Left e -> throwError $ error $ genericEncodeJSON defaultOptions e
-        Right res -> pure res
+        Right res -> pure $ responseToShared res
 
-requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2LatLon_ token l =
     requestCo2 (requestCo2LatLonAff l) token
 
-requestCo2LatLon :: forall eff. Fn2 ApiToken LatLon (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2LatLon :: forall eff. Fn2 ApiToken LatLon (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2LatLon = mkFn2 requestCo2LatLon_
 
-requestCo2Country_ :: forall eff. ApiToken -> CountryCode -> (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2Country_ :: forall eff. ApiToken -> CountryCode -> (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2Country_ token countryCode =
     requestCo2 (requestCo2CountryAff countryCode) token
 
-requestCo2Country :: forall eff. Fn2 ApiToken CountryCode (Eff (ajax :: AJAX | eff) (Promise.Promise Co2Response))
+requestCo2Country :: forall eff. Fn2 ApiToken CountryCode (Eff (ajax :: AJAX | eff) (Promise.Promise SharedResponse))
 requestCo2Country = mkFn2 requestCo2Country_

@@ -7,6 +7,7 @@ import * as maps from "@google/maps";
 import * as lib from "./lib.purs";
 import { DialogflowApp } from "actions-on-google/dialogflow-app";
 import { Location } from "actions-on-google/assistant-app";
+import { SharedResponse } from "./generated";
 
 /**
  * For geocoding city + ZIP, I could do something like this:
@@ -140,12 +141,12 @@ const Responses = {
     ssml`<speak>
       Oh no, something broke. Sorry that I can't help you right now. Please try again later.
     </speak>`,
-  sayIntensity: (res: Co2Response) =>
+  sayIntensity: (res: SharedResponse) =>
     ssml`<speak>
       In your area, the electricity is generated
-      using ${res.value0.carbonData.value0.fossilFuelPercentage.toFixed(1)}%
+      using ${res.fossilFuelPercentage.toFixed(1)}%
       fossil fuels leading to a carbon intensity of
-      ${res.value0.carbonData.value0.carbonIntensity.toFixed(1)} ${res.value0.carbonIntensityUnit}.
+      ${res.carbonIntensity.toFixed(1)} ${res.carbonIntensityUnit}.
     </speak>`,
 };
 
@@ -171,7 +172,7 @@ declare interface Co2Response {
 
 const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
-    .then((res: Co2Response) => {
+    .then((res: SharedResponse) => {
       return app.tell(Responses.sayIntensity(res));
     }).catch((err: Error) => {
       console.error('Caught error response: ', err.message);
