@@ -13,6 +13,7 @@ module Lib
 
 import Prelude
 
+import Control.Comonad (extract)
 import Control.Monad.Aff (Aff, throwError, error)
 import Control.Monad.Eff (Eff)
 import Control.Promise as Promise
@@ -28,6 +29,7 @@ import Data.Maybe (Maybe(Just, Nothing))
 import Network.HTTP.Affjax (get, URL, Affjax, AJAX)
 import Network.HTTP.Affjax.Response (class Respondable)
 import Network.HTTP.StatusCode (StatusCode(..))
+import Shared (SharedResponse(SharedResponse))
 
 newtype ApiToken = ApiToken URL
 newtype CountryCode = CountryCode String
@@ -56,6 +58,16 @@ derive instance genericResponseError :: Generic ResponseError _
 
 type Co2Response = Co2ResponseF Identity
 type PartialCo2Response = Co2ResponseF Maybe
+
+responseToShared :: Co2Response -> SharedResponse
+responseToShared (Co2Response r) =
+    let (Co2ResponseData d) = extract r.carbonData
+    in SharedResponse
+        { countryCode: r.countryCode
+        , carbonIntensityUnit: r.carbonIntensityUnit
+        , carbonIntensity: d.carbonIntensity
+        , fossilFuelPercentage: d.fossilFuelPercentage
+        }
 
 instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF Maybe) where
   decodeJson json = do

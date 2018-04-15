@@ -1,1 +1,6 @@
-export type TestType = { a: number };
+export type SharedResponse = {
+  carbonIntensity: number,
+  carbonIntensityUnit: string,
+  countryCode: string,
+  fossilFuelPercentage: number
+};
