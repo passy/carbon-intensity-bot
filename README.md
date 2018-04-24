@@ -4,6 +4,8 @@
 
 > A Google Assistant Action to query your current local electricity carbon intensity.
 
+View in the [Google Assistant Directory](https://assistant.google.com/services/a/uid/00000075196ece08?hl=en-GB).
+
 ## Running locally
 
 There's an odd limitation of the `firebase-tools` CLI that requires you to
