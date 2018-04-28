@@ -1,6 +1,6 @@
 # Carbon Intensity
 
-![](functions/assets/logo.png)
+<img src="functions/assets/logo.png" width=300>
 
 > A Google Assistant Action to query your current local electricity carbon intensity.
 
