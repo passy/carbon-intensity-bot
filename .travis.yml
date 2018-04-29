@@ -14,4 +14,7 @@ cache:
         - node_modules
 
 script:
-    - cd functions && npm i && npm test
+    - cd functions
+    - npm i
+    - npm run build
+    - npm test
