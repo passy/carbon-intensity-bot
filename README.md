@@ -1,4 +1,4 @@
-# Carbon Intensity
+# Carbon Intensity [![Build Status](https://travis-ci.org/passy/carbon-intensity-bot.svg?branch=master)](https://travis-ci.org/passy/carbon-intensity-bot)
 
 <img src="functions/assets/logo.png" width=300>
 
