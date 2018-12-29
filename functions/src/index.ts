@@ -166,10 +166,6 @@ declare interface UserStorage {
   lastUpdated: number;
 }
 
-declare interface Co2Response {
-  readonly value0: Co2Data;
-}
-
 const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
     .then((res: SharedResponse) => {
