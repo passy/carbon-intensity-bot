@@ -238,13 +238,16 @@ const Flows = new Map([
     const requestedPermission = (app.data as any).requestedPermission;
     const permissions = app.SupportedPermissions;
 
-    let coordinatesP;
+    // FIXME: Should be of type Coordinates.
+    let coordinatesP: Promise<{latitude: number, longitude: number}>;
     if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
       // If we requested coarse location, it means that we're on a speaker device.
-      const location = app.getDeviceLocation();
+      // FIXME: Fix type mismatch here.
+      const location: {zipCode: string, city: string} = app.getDeviceLocation() as any;
       coordinatesP = coarseLocationToCoordinates(mapsClient, location.zipCode, location.city);
     } else if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
-      const { coordinates } = app.getDeviceLocation();
+      // FIXME: Broken type information.
+      const { coordinates } = app.getDeviceLocation() as any;
       coordinatesP = Promise.resolve(coordinates);
     } else {
       coordinatesP = Promise.reject(new Error('Unrecognized permission'));

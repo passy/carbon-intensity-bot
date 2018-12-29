@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { MockRequest, headerV2 } from "actions-on-google/test/utils/mocking";
 import * as functions from "firebase-functions";
-import * as nock from "nock";
 import { nockSetups } from "./nock-setups";
 
 class MockResponse {

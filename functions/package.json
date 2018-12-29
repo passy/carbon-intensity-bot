@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "tslint -p tslint.json && webpack",
+    "build": "tsc && tslint -p tslint.json && webpack",
     "build:generate-types": "pulp run -m GenerateTypes",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
@@ -22,9 +22,9 @@
   "devDependencies": {
     "@types/actions-on-google": "^1.8.0",
     "@types/jest": "^22.2.2",
-    "@types/nock": "^9.1.2",
+    "@types/nock": "^9.3.0",
     "jest": "^22.4.3",
-    "nock": "^9.2.3",
+    "nock": "^9.3.0",
     "prettier": "^1.12.0",
     "purescript": "^0.11.7",
     "purescript-psa": "^0.6.0",
@@ -32,7 +32,7 @@
     "ts-jest": "^22.4.2",
     "ts-loader": "3.5.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.8.1",
+    "typescript": "^3.2.2",
     "webpack": "^3.11.0",
     "webpack-node-externals": "^1.7.2"
   },
@@ -41,7 +41,8 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+    "testURL": "http://localhost/",
+    "testRegex": "(/__tests__/.*(\\.)(test|spec))\\.tsx?$",
     "moduleFileExtensions": [
       "ts",
       "tsx",

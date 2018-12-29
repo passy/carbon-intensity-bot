@@ -11,6 +11,8 @@
   "compileOnSave": true,
   "include": [
     "src",
-    "__tests__",
+  ],
+  "exclude": [
+    "__tests__/nock-setups.js"
   ]
 }
