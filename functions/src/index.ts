@@ -6,7 +6,6 @@ import * as maps from "@google/maps";
 // @ts-ignore
 import * as lib from "./lib.purs";
 import { DialogflowApp } from "actions-on-google/dialogflow-app";
-import { Location } from "actions-on-google/assistant-app";
 import { SharedResponse } from "./generated";
 
 /**
@@ -164,10 +163,6 @@ declare interface Co2Data {
 declare interface UserStorage {
   countryCode: string;
   lastUpdated: number;
-}
-
-declare interface Co2Response {
-  readonly value0: Co2Data;
 }
 
 const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
