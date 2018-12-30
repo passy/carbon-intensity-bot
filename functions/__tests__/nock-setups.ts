@@ -1,8 +1,10 @@
 import * as nock from "nock";
 
+const nockOptions: nock.Options = { encodedQueryParams: true } as any;
+
 export const nockSetups = {
   carbon_zip: () => {
-    nock("https://maps.googleapis.com:443", { encodedQueryParams: true })
+    nock("https://maps.googleapis.com:443", nockOptions)
       .get("/maps/api/geocode/json")
       .query({
         components: "locality%3ALondon%7Cpost_code%3AWC1H%200PL",
@@ -11,6 +13,7 @@ export const nockSetups = {
       .reply(
         200,
         {
+          // @ts-ignore
           results: [
             {
               address_components: [
@@ -87,12 +90,13 @@ export const nockSetups = {
         ]
       );
 
-    nock("https://api.co2signal.com:443", { encodedQueryParams: true })
+    nock("https://api.co2signal.com:443", nockOptions)
       .get("/v1/latest")
       .query({ countryCode: "GB", "auth-token": "012345" })
       .reply(
         200,
         {
+          // @ts-ignore
           _disclaimer:
             "This data is the exclusive property of Tomorrow and/or related parties. If you're in doubt about your rights to use this data, please contact hello@tmrow.com",
           status: "ok",
@@ -145,7 +149,7 @@ export const nockSetups = {
         ]
       );
 
-    nock("https://maps.googleapis.com:443", { encodedQueryParams: true })
+    nock("https://maps.googleapis.com:443", nockOptions)
       .get("/maps/api/geocode/json")
       .query({
         latlng: "51.5073509%2C-0.1277583",
@@ -154,6 +158,7 @@ export const nockSetups = {
       .reply(
         200,
         {
+          // @ts-ignore
           results: [
             {
               address_components: [
@@ -701,12 +706,13 @@ export const nockSetups = {
         ]
       );
 
-    nock("https://api.co2signal.com:443", { encodedQueryParams: true })
+    nock("https://api.co2signal.com:443", nockOptions)
       .get("/v1/latest")
       .query({ countryCode: "GB", "auth-token": "012345" })
       .reply(
         200,
         {
+          // @ts-ignore
           _disclaimer:
             "This data is the exclusive property of Tomorrow and/or related parties. If you're in doubt about your rights to use this data, please contact hello@tmrow.com",
           status: "ok",
@@ -722,12 +728,13 @@ export const nockSetups = {
   },
 
   carbon_latlon: () => {
-    nock("https://api.co2signal.com:443", { encodedQueryParams: true })
+    nock("https://api.co2signal.com:443", nockOptions)
       .get("/v1/latest")
       .query({ countryCode: "GB", "auth-token": "012345" })
       .reply(
         200,
         {
+          // @ts-ignore
           _disclaimer:
             "This data is the exclusive property of Tomorrow and/or related parties. If you're in doubt about your rights to use this data, please contact hello@tmrow.com",
           status: "ok",
@@ -780,7 +787,7 @@ export const nockSetups = {
         ]
       );
 
-    nock("https://maps.googleapis.com:443", { encodedQueryParams: true })
+    nock("https://maps.googleapis.com:443", nockOptions)
       .get("/maps/api/geocode/json")
       .query({
         latlng: "51.525460599999995%2C-0.12926369999999998",
@@ -789,6 +796,7 @@ export const nockSetups = {
       .reply(
         200,
         {
+          // @ts-ignore
           results: [
             {
               address_components: [
@@ -1734,12 +1742,13 @@ export const nockSetups = {
   },
 
   carbon_userstorage: () => {
-    nock("https://api.co2signal.com:443", { encodedQueryParams: true })
+    nock("https://api.co2signal.com:443", nockOptions)
       .get("/v1/latest")
       .query({ countryCode: "GB", "auth-token": "012345" })
       .reply(
         200,
         {
+          // @ts-ignore
           _disclaimer:
             "This data is the exclusive property of Tomorrow and/or related parties. If you're in doubt about your rights to use this data, please contact hello@tmrow.com",
           status: "ok",
