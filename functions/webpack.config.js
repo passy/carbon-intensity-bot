@@ -1,14 +1,15 @@
 "use strict";
 
 const nodeExternals = require("webpack-node-externals");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const path = require('path');
 
 module.exports = {
   entry: "./src/index.ts",
   mode: "production",
   target: "node",
   output: {
-    filename: "lib/index.js",
+    path: path.resolve(__dirname, 'lib'),
+    filename: "index.js",
     libraryTarget: "this"
   },
   module: {
@@ -40,8 +41,7 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".purs"]
   },
-  externals: [nodeExternals()],
-  plugins: [
-    // new ForkTsCheckerWebpackPlugin()
-  ]
+  externals: [
+    nodeExternals({whitelist: [/\.(?!(?:jsx?|json)$).{1,5}$/i]}),
+  ],
 };
