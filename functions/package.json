@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "pulp build && tsc && tslint -p tslint.json && webpack --config ./webpack.config.js",
+    "build": "pulp build && webpack --config ./webpack.config.js && tsc && tslint -p tslint.json",
     "build:generate-types": "pulp run -m GenerateTypes",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
