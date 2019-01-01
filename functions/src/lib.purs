@@ -14,6 +14,7 @@ module Lib
 import Prelude
 
 import Affjax (Response, ResponseFormatError, URL, get, printResponseFormatError)
+import Affjax.ResponseFormat as ResponseFormat
 import Affjax.StatusCode (StatusCode(..))
 import Control.Comonad (extract)
 import Control.Promise as Promise
@@ -95,14 +96,14 @@ decodeCo2Response json = do
 
 type Affjax a = Aff (Response (Either ResponseFormatError a))
 
-requestCo2LatLonAff :: forall a. LatLon -> ApiToken -> Affjax a
+requestCo2LatLonAff :: LatLon -> ApiToken -> Affjax Json
 requestCo2LatLonAff (LatLon l) (ApiToken token) =
-    get $ baseUrl <> "latest?lat=" <> show l.lat <> "&lon=" <> show l.lon <>
+    get ResponseFormat.json $ baseUrl <> "latest?lat=" <> show l.lat <> "&lon=" <> show l.lon <>
                                     "&auth-token=" <> token
 
-requestCo2CountryAff :: forall a. CountryCode -> ApiToken -> Affjax a
+requestCo2CountryAff :: CountryCode -> ApiToken -> Affjax Json
 requestCo2CountryAff (CountryCode code) (ApiToken token) =
-    get $ baseUrl <> "latest?countryCode=" <> code <> "&auth-token=" <> token
+    get ResponseFormat.json $ baseUrl <> "latest?countryCode=" <> code <> "&auth-token=" <> token
 
 getCo2Aff
     :: Affjax Json
@@ -116,8 +117,7 @@ getCo2Aff req = do
         StatusCode n -> Left $ ErrStatusCode n statusText
 
 requestCo2
-    :: forall eff
-    .  (ApiToken -> Affjax Json)
+    :: (ApiToken -> Affjax Json)
     -> ApiToken
     -> Effect (Promise.Promise SharedResponse)
 requestCo2 fn token = Promise.fromAff $ do
@@ -125,16 +125,16 @@ requestCo2 fn token = Promise.fromAff $ do
         Left e -> throwError $ error $ genericEncodeJSON defaultOptions e
         Right res -> pure $ responseToShared res
 
-requestCo2LatLon_ :: forall eff. ApiToken -> LatLon -> (Effect (Promise.Promise SharedResponse))
+requestCo2LatLon_ :: ApiToken -> LatLon -> (Effect (Promise.Promise SharedResponse))
 requestCo2LatLon_ token l =
     requestCo2 (requestCo2LatLonAff l) token
 
-requestCo2LatLon :: forall eff. Fn2 ApiToken LatLon (Effect (Promise.Promise SharedResponse))
+requestCo2LatLon :: Fn2 ApiToken LatLon (Effect (Promise.Promise SharedResponse))
 requestCo2LatLon = mkFn2 requestCo2LatLon_
 
-requestCo2Country_ :: forall eff. ApiToken -> CountryCode -> (Effect (Promise.Promise SharedResponse))
+requestCo2Country_ :: ApiToken -> CountryCode -> (Effect (Promise.Promise SharedResponse))
 requestCo2Country_ token countryCode =
     requestCo2 (requestCo2CountryAff countryCode) token
 
-requestCo2Country :: forall eff. Fn2 ApiToken CountryCode (Effect (Promise.Promise SharedResponse))
+requestCo2Country :: Fn2 ApiToken CountryCode (Effect (Promise.Promise SharedResponse))
 requestCo2Country = mkFn2 requestCo2Country_
