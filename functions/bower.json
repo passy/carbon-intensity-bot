@@ -3,18 +3,18 @@
   "main": "lib/lib.purs",
   "private": true,
   "devDependencies": {
-    "purescript-affjax": "passy/purescript-affjax#de7d797a41aa9571b9e825a6663a9ee228f8f485",
-    "purescript-aff-promise": "^1.0.0",
-    "purescript-functions": "^3.0.0",
-    "purescript-debug": "^3.0.0",
-    "purescript-argonaut-codecs": "^3.2.0",
-    "purescript-psci-support": "^3.0.0",
-    "purescript-foreign": "^4.0.1",
-    "purescript-foreign-generic": "^5.0.1",
-    "purescript-ohyes": "^1.1.0",
-    "purescript-node-fs-aff": "^5.0.0",
-    "purescript-prettier": "^0.1.0"
+    "purescript-aff-promise": "^2.0.1",
+    "purescript-functions": "^4.0.0",
+    "purescript-debug": "^4.0.0",
+    "purescript-argonaut-codecs": "^5.1.0",
+    "purescript-psci-support": "^4.0.0",
+    "purescript-foreign": "^5.0.0",
+    "purescript-foreign-generic": "^7.0.0",
+    "purescript-ohyes": "^2.0.0",
+    "purescript-node-fs-aff": "^6.0.0",
+    "purescript-prettier": "^0.2.0",
+    "purescript-affjax": "^7.0.0",
+    "purescript-prelude": "^4.1.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
