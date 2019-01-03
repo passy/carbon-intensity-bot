@@ -180,10 +180,12 @@
     through2 "^2.0.0"
     xdg-basedir "^3.0.0"
 
-"@google/maps@^0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@google/maps/-/maps-0.4.6.tgz#0a1957fd71a4c9f30706b2fd2aac13cafd6a9072"
-  integrity sha512-eoLrzOc2/IYqce0Tw1dxuHEqabbPS5jsuhbGHMkJETI5eA1Ls+1BlRigjbljgnbH77f5P9wfFgaoolXIhMYg8Q==
+"@google/maps@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@google/maps/-/maps-0.5.5.tgz#478a5791e3b8d444be966462daec3ee43eb331e0"
+  integrity sha512-RSZriyE2XViVhXgdEcQaEu3jMYh2A/jS0VahLHXqGO0VfPyEbDac4PAn7/hBJiTavWpxchKfe5OI9inJofFWxA==
+  dependencies:
+    uuid ">=2.2.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -334,6 +336,11 @@
   dependencies:
     "@types/node" "*"
     "@types/request" "*"
+
+"@types/google__maps@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@types/google__maps/-/google__maps-0.5.0.tgz#d361ba468cdb3815a4b1adfa75cd3086b9dc8a00"
+  integrity sha512-2qoKQKjiv+PzlLg6Mam29sB5lD1nQNNx99Q4ci2Muf70EZdSM4lhVxXbfTzNP7i9pRUNS5bCng1G3qew8E6X4g==
 
 "@types/jest@^23.3.0":
   version "23.3.10"
@@ -9085,15 +9092,15 @@ uuid@3.2.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
   integrity sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
 
+uuid@>=2.2.1, uuid@^3.0.0, uuid@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
+  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
+
 uuid@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
   integrity sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=
-
-uuid@^3.0.0, uuid@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
-  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 v8-compile-cache@^2.0.2:
   version "2.0.2"
