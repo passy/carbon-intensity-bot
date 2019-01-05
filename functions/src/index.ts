@@ -149,17 +149,6 @@ const Responses = {
     </speak>`,
 };
 
-declare interface Co2InnerData {
-  readonly fossilFuelPercentage: number;
-  readonly carbonIntensity: number;
-}
-
-declare interface Co2Data {
-  readonly countryCode: string;
-  readonly carbonIntensityUnit: string;
-  readonly carbonData: { value0: Co2InnerData };
-}
-
 declare interface UserStorage {
   countryCode: string;
   lastUpdated: number;
