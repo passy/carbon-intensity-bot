@@ -2,6 +2,7 @@
 
 const nodeExternals = require("webpack-node-externals");
 const path = require('path');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   entry: "./src/index.ts",
@@ -43,5 +44,8 @@ module.exports = {
   },
   externals: [
     nodeExternals({whitelist: [/\.(?!(?:jsx?|json)$).{1,5}$/i]}),
+  ],
+  plugins: [
+    new ForkTsCheckerWebpackPlugin(),
   ],
 };
