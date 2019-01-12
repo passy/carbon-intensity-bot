@@ -5,7 +5,7 @@ import * as actions from "actions-on-google";
 import * as maps from "@google/maps";
 // @ts-ignore
 import * as lib from "./lib.purs";
-import { DialogflowApp } from "actions-on-google/dialogflow-app";
+import { dialogflow } from "actions-on-google";
 import { SharedResponse } from "./generated";
 
 /**
@@ -154,10 +154,14 @@ declare interface UserStorage {
   lastUpdated: number;
 }
 
-const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any => {
+declare interface StoredData {
+  requestedPermission: string;
+}
+
+const respondWithCountryCode = (conv: actions.DialogflowConversation<{}, {}, actions.Contexts>, countryCode: String): any => {
   lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
     .then((res: SharedResponse) => {
-      return app.tell(Responses.sayIntensity(res));
+      return conv.close(Responses.sayIntensity(res));
     }).catch((err: Error) => {
       console.error('Caught error response: ', err.message);
 
@@ -172,9 +176,9 @@ const respondWithCountryCode = (app: DialogflowApp, countryCode: String): any =>
 
       switch (errObj.tag) {
         case "ErrIncompleteResponse":
-          return app.tell(Responses.unsupportedRegion());
+          return conv.close(Responses.unsupportedRegion());
         case "ErrStatusCode":
-          return app.tell(Responses.unexpectedStatusCode(errObj.contents[0], errObj.contents[1]));
+          return conv.close(Responses.unexpectedStatusCode(errObj.contents[0], errObj.contents[1]));
         default:
           throw err;
       }
@@ -188,51 +192,69 @@ const isStorageExpired = (storage: UserStorage): boolean =>
     && storage.lastUpdated > 0 
     && (Date.now() - storage.lastUpdated > WEEK_IN_MS)
 
-const Flows = new Map([
-  [Actions.UNKNOWN_INTENT, (app: DialogflowApp) => {
-    return app.tell(Responses.errorUnknownIntent());
-  }],
-  [Actions.WELCOME, (app: DialogflowApp) => {
-    return app.ask(Responses.welcome());
-  }],
-  [Actions.REQUEST_LOC_PERMISSION, (app: DialogflowApp) => {
-    const permissions = app.SupportedPermissions;
-    // If the request comes from a phone, we can't use coarse location.
-    const requestedPermission = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT)
-      ? permissions.DEVICE_PRECISE_LOCATION
-      : permissions.DEVICE_COARSE_LOCATION;
+const app = dialogflow();
 
-    (app.data as any).requestedPermission = requestedPermission;
-    const storage = app.userStorage as UserStorage;
-    const countryCode = storage.countryCode;
-    if (!countryCode || isStorageExpired(storage)) {
-      return app.askForPermission(Responses.permissionReason(), requestedPermission as any);
-    }
+app.intent(Actions.UNKNOWN_INTENT, conv => {
+  conv.ask(Responses.errorUnknownIntent());
+});
 
-    return respondWithCountryCode(app, countryCode);
-  }],
-  [Actions.READ_CARBON_INTENSITY, (app: DialogflowApp) => {
-    if (!app.isPermissionGranted()) {
+app.intent(Actions.UNHANDLED_DEEP_LINK, conv => {
+  conv.ask(Responses.welcome());
+});
+
+app.intent(Actions.WELCOME, conv => {
+  conv.ask(Responses.welcome());
+});
+
+app.intent(Actions.REQUEST_LOC_PERMISSION, conv => {
+  // If the request comes from a phone, we can't use coarse location.
+  const requestedPermission = conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT')
+    ? 'DEVICE_PRECISE_LOCATION'
+    : 'DEVICE_COARSE_LOCATION';
+
+  const data = conv.data as StoredData;
+  data.requestedPermission = requestedPermission;
+
+  const storage = conv.user.storage as UserStorage;
+  const countryCode = storage.countryCode;
+  if (!countryCode || isStorageExpired(storage)) {
+    return conv.ask(new actions.Permission({
+      context: Responses.permissionReason(),
+      permissions: requestedPermission,
+    }))
+  }
+
+  return respondWithCountryCode(conv, countryCode);
+});
+
+app.intent(Actions.READ_CARBON_INTENSITY, (conv, params, granted) => {
+    if (!granted) {
       return Promise.reject(new Error('Permission not granted'));
     }
 
     const mapsClient = maps.createClient({
       key: functions.config().geocoding.key,
     });
-    const requestedPermission = (app.data as any).requestedPermission;
-    const permissions = app.SupportedPermissions;
+    const requestedPermission = (conv.data as StoredData).requestedPermission;
 
     // FIXME: Should be of type Coordinates.
     let coordinatesP: Promise<{latitude: number, longitude: number}>;
-    if (requestedPermission === permissions.DEVICE_COARSE_LOCATION) {
+    if (requestedPermission === 'DEVICE_COARSE_LOCATION') {
       // If we requested coarse location, it means that we're on a speaker device.
-      // FIXME: Fix type mismatch here.
-      const location: {zipCode: string, city: string} = app.getDeviceLocation() as any;
-      coordinatesP = coarseLocationToCoordinates(mapsClient, location.zipCode, location.city);
-    } else if (requestedPermission === permissions.DEVICE_PRECISE_LOCATION) {
-      // FIXME: Broken type information.
-      const { coordinates } = app.getDeviceLocation() as any;
-      coordinatesP = Promise.resolve(coordinates);
+      const location = conv.device.location;
+      if (location && location.zipCode && location.city) {
+        coordinatesP = coarseLocationToCoordinates(mapsClient, location.zipCode, location.city);
+      } else {
+        coordinatesP = Promise.reject(new Error('Coarse location unavailable.'));
+      }
+    } else if (requestedPermission === 'DEVICE_PRECISE_LOCATION') {
+      if (conv.device.location && conv.device.location.coordinates) {
+        const coordinates = conv.device.location.coordinates;
+        // This is a silly fallback but I can't think of a good way why they should actually be undefined.
+        coordinatesP = Promise.resolve({ latitude: coordinates.latitude || 0, longitude: coordinates.longitude || 0 });
+      } else {
+        coordinatesP = Promise.reject(new Error('Precise location unavailable.'));
+      }
     } else {
       coordinatesP = Promise.reject(new Error('Unrecognized permission'));
     }
@@ -248,21 +270,13 @@ const Flows = new Map([
         )
         // Yes, this is as bad as it looks. Some magic object we can write to and is somehow persisted in the CLOUD.
         .then(countryCode => {
-          const us = app.userStorage as UserStorage;
+          const us = conv.user.storage as UserStorage;
           us.lastUpdated = Date.now();
           us.countryCode = countryCode;
           return countryCode;
         })
-        .then(respondWithCountryCode.bind(null, app))
+        .then(respondWithCountryCode.bind(null, conv))
     );
-  }],
-  [Actions.UNHANDLED_DEEP_LINK, (app) =>
-    app.tell(Responses.welcome())
-  ]
-]);
+  });
 
-export const webhook = functions.https.onRequest((request, response) => {
-  process.on('unhandledRejection', r => console.error(r));
-  const app = new actions.DialogflowApp({ request, response });
-  return app.handleRequestAsync(Flows as any);
-});
+export const webhook = functions.https.onRequest(app);
