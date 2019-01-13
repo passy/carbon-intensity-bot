@@ -158,7 +158,7 @@ declare interface StoredData {
 }
 
 const respondWithCountryCode = (conv: actions.DialogflowConversation<{}, {}, actions.Contexts>, countryCode: String): any => {
-  lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
+  return lib.requestCo2Country(functions.config().co2signal.key, countryCode)()
     .then((res: SharedResponse) => {
       return conv.close(Responses.sayIntensity(res));
     }).catch((err: Error) => {
