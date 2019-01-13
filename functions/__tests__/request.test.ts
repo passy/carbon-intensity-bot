@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as functions from "firebase-functions";
 import * as firebaseFunctionsTest from "firebase-functions-test";
 import { nockSetups } from "./nock-setups";
 
@@ -64,8 +63,10 @@ const loadFixture = (name: string) => {
     })
   );
   return {
-    get: function() {},
+    // tslint-ignore
+    get: () => {},
     body: body,
+    headers: {},
   };
 };
 

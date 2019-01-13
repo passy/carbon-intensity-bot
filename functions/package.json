@@ -19,6 +19,7 @@
     "xhr2": "^0.1.4"
   },
   "devDependencies": {
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
     "@types/actions-on-google": "^1.8.0",
     "@types/google__maps": "^0.5.0",
     "@types/jest": "^23.3.0",
