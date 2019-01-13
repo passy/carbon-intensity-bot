@@ -63,7 +63,10 @@ const loadFixture = (name: string) => {
       encoding: "utf-8"
     })
   );
-  return body;
+  return {
+    get: function() {},
+    body: body,
+  };
 };
 
 ["carbon_zip", "carbon_latlon", "carbon_userstorage"].forEach(fixture => {
@@ -74,7 +77,7 @@ const loadFixture = (name: string) => {
 
     return new Promise<MockResponse>((resolve, reject) => {
       const resp = new MockResponse(resolve);
-      triggers.webhook(req, resp as any);
+      triggers.webhook(req, resp);
       return resp;
     }).then((resp: MockResponse) => {
       expect(resp.statusCode).toBe(200);
