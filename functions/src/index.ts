@@ -1,11 +1,10 @@
 "use strict";
 
 import * as functions from "firebase-functions";
-import * as actions from "actions-on-google";
 import * as maps from "@google/maps";
 // @ts-ignore
 import * as lib from "./lib.purs";
-import { dialogflow } from "actions-on-google";
+import * as actions from "actions-on-google";
 import { SharedResponse } from "./generated";
 
 /**
@@ -192,7 +191,7 @@ const isStorageExpired = (storage: UserStorage): boolean =>
     && storage.lastUpdated > 0 
     && (Date.now() - storage.lastUpdated > WEEK_IN_MS)
 
-const app = dialogflow();
+const app = actions.dialogflow();
 
 app.intent(Actions.UNKNOWN_INTENT, conv => {
   conv.ask(Responses.errorUnknownIntent());

@@ -1,9 +1,14 @@
-import * as triggers from "../lib/index";
 import * as fs from "fs";
 import * as path from "path";
-import { MockRequest, headerV2 } from "actions-on-google/test/utils/mocking";
 import * as functions from "firebase-functions";
+import * as firebaseFunctionsTest from "firebase-functions-test";
 import { nockSetups } from "./nock-setups";
+
+const test = firebaseFunctionsTest();
+
+// Apparently needs to happen after the side effects from the previous
+// invocation have occured.
+import * as triggers from "../lib/index";
 
 class MockResponse {
   statusCode: number;
@@ -37,18 +42,11 @@ class MockResponse {
 
 const USE_REAL_CONFIG = false;
 
-// Manually mock that static global.
-// @ts-ignore
-functions.config = () => {
-  if (USE_REAL_CONFIG) {
-    return JSON.parse(fs.readFileSync(
-        path.join(__dirname, "..", ".runtimeconfig.json"),
-        {
-          encoding: "utf-8"
-        }
-      ));
-  }
-  return {
+if (USE_REAL_CONFIG) {
+  test.mockConfig(JSON.parse(fs.readFileSync(
+    path.join(__dirname, "..", ".runtimeconfig.json"), {encoding: "utf-8"})));
+} else {
+  test.mockConfig({
     "geocoding": {
       // The 'AIza' prefix is validated on the client-side.
       "key": "AIzaAABBCC"
@@ -56,20 +54,20 @@ functions.config = () => {
     "co2signal": {
       "key": "012345"
     }
-  };
-};
+  });
+}
 
-const loadFixture = name => {
+const loadFixture = (name: string) => {
   const body = JSON.parse(
     fs.readFileSync(path.join(__dirname, "requests", name + ".json"), {
       encoding: "utf-8"
     })
   );
-  return new MockRequest(headerV2, body);
+  return body;
 };
 
 ["carbon_zip", "carbon_latlon", "carbon_userstorage"].forEach(fixture => {
-  it(`sends produces a response for fixture ${fixture}`, () => {
+  it(`produces a response for fixture ${fixture}`, () => {
     expect.assertions(2);
     nockSetups[fixture]();
     const req = loadFixture(fixture);
