@@ -1,37 +1,65 @@
 {
-  "originalRequest": {
+  "responseId": "redacted",
+  "queryResult": {
+    "queryText": "Give me my local carbon intensity.",
+    "action": "request.location.permission",
+    "parameters": {},
+    "allRequiredParamsPresent": true,
+    "fulfillmentMessages": [
+      {
+        "text": {
+          "text": [
+            ""
+          ]
+        }
+      }
+    ],
+    "outputContexts": [
+    ],
+    "intent": {
+      "name": "projects/test-carbon-intensity/agent/intents/9e1e9c3e-f2ef-4f2e-8e7a-6ce824de9251",
+      "displayName": "request.location.permission"
+    },
+    "intentDetectionConfidence": 1,
+    "diagnosticInfo": {
+      "end_conversation": true
+    },
+    "languageCode": "en-us"
+  },
+  "originalDetectIntentRequest": {
     "source": "google",
     "version": "2",
-    "data": {
+    "payload": {
       "isInSandbox": true,
       "surface": {
         "capabilities": [
           {
-            "name": "actions.capability.SCREEN_OUTPUT"
-          },
-          {
             "name": "actions.capability.AUDIO_OUTPUT"
           },
           {
-            "name": "actions.capability.WEB_BROWSER"
+            "name": "actions.capability.MEDIA_RESPONSE_AUDIO"
           },
           {
-            "name": "actions.capability.MEDIA_RESPONSE_AUDIO"
+            "name": "actions.capability.SCREEN_OUTPUT"
+          },
+          {
+            "name": "actions.capability.WEB_BROWSER"
           }
         ]
       },
+      "requestType": "SIMULATOR",
       "inputs": [
         {
           "rawInputs": [
             {
-              "query": "yes",
-              "inputType": "VOICE"
+              "query": "Give me my local carbon intensity.",
+              "inputType": "KEYBOARD"
             }
           ],
           "arguments": [
             {
-              "rawText": "yes",
-              "textValue": "yes",
+              "rawText": "Give me my local carbon intensity.",
+              "textValue": "Give me my local carbon intensity.",
               "name": "text"
             }
           ],
@@ -39,94 +67,32 @@
         }
       ],
       "user": {
-        "userStorage": "{\"data\":{\"countryCode\":\"GB\"}}",
-        "lastSeen": "2018-02-03T13:31:51Z",
+        "userStorage": "{\"data\":{\"lastUpdated\":1548545547791,\"countryCode\":\"GB\"}}",
+        "lastSeen": "2019-01-26T23:32:27Z",
         "locale": "en-US",
         "userId": "redacted"
       },
       "conversation": {
         "conversationId": "redacted",
         "type": "ACTIVE",
-        "conversationToken": "[\"_actions_on_google_\"]"
+        "conversationToken": "[]"
       },
       "availableSurfaces": [
         {
           "capabilities": [
             {
+              "name": "actions.capability.AUDIO_OUTPUT"
+            },
+            {
               "name": "actions.capability.SCREEN_OUTPUT"
             },
             {
-              "name": "actions.capability.AUDIO_OUTPUT"
+              "name": "actions.capability.WEB_BROWSER"
             }
           ]
         }
       ]
     }
   },
-  "id": "redacted",
-  "timestamp": "2018-02-03T13:39:16.866Z",
-  "lang": "en-us",
-  "result": {
-    "source": "agent",
-    "resolvedQuery": "yes",
-    "speech": "",
-    "action": "request.location.permission",
-    "actionIncomplete": false,
-    "parameters": {},
-    "contexts": [
-      {
-        "name": "actions_capability_screen_output",
-        "parameters": {},
-        "lifespan": 0
-      },
-      {
-        "name": "_actions_on_google_",
-        "parameters": {},
-        "lifespan": 99
-      },
-      {
-        "name": "actions_capability_audio_output",
-        "parameters": {},
-        "lifespan": 0
-      },
-      {
-        "name": "google_assistant_input_type_voice",
-        "parameters": {},
-        "lifespan": 0
-      },
-      {
-        "name": "actions_capability_web_browser",
-        "parameters": {},
-        "lifespan": 0
-      },
-      {
-        "name": "actions_capability_media_response_audio",
-        "parameters": {},
-        "lifespan": 0
-      }
-    ],
-    "metadata": {
-      "intentId": "redacted",
-      "webhookUsed": "true",
-      "webhookForSlotFillingUsed": "false",
-      "nluResponseTime": 6,
-      "intentName": "read_carbon_permission_flow"
-    },
-    "fulfillment": {
-      "speech": "",
-      "messages": [
-        {
-          "type": 0,
-          "speech": ""
-        }
-      ]
-    },
-    "score": 1
-  },
-  "status": {
-    "code": 200,
-    "errorType": "success",
-    "webhookTimedOut": false
-  },
-  "sessionId": "redacted"
+  "session": "projects/test-carbon-intensity/agent/sessions/redacted"
 }

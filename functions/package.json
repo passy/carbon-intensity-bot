@@ -13,16 +13,18 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google/maps": "^0.5.5",
-    "actions-on-google": "^1.10.0",
+    "actions-on-google": "^2.5.0",
     "firebase-admin": "^6.4.0",
     "firebase-functions": "^2.1.0",
     "xhr2": "^0.1.4"
   },
   "devDependencies": {
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
     "@types/actions-on-google": "^1.8.0",
     "@types/google__maps": "^0.5.0",
     "@types/jest": "^23.3.0",
     "@types/nock": "^9.3.0",
+    "firebase-functions-test": "^0.1.6",
     "firebase-tools": "^6.2.2",
     "jest": "^23.3.0",
     "nock": "^9.3.0",
