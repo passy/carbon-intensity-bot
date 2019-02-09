@@ -14,7 +14,6 @@
   "dependencies": {
     "@google/maps": "^0.5.5",
     "actions-on-google": "^2.5.0",
-    "firebase-admin": "^6.4.0",
     "firebase-functions": "^2.1.0",
     "xhr2": "^0.1.4"
   },
@@ -24,8 +23,9 @@
     "@types/google__maps": "^0.5.0",
     "@types/jest": "^23.3.0",
     "@types/nock": "^9.3.0",
+    "firebase-admin": "^6.5.1",
     "firebase-functions-test": "^0.1.6",
-    "firebase-tools": "^6.2.2",
+    "firebase-tools": "^6.3.1",
     "jest": "^23.3.0",
     "nock": "^9.3.0",
     "prettier": "^1.15.3",
