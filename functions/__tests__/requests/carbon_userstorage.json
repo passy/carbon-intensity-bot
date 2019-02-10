@@ -67,7 +67,7 @@
         }
       ],
       "user": {
-        "userStorage": "{\"data\":{\"lastUpdated\":1548545547791,\"countryCode\":\"GB\"}}",
+        "userStorage": "{\"data\":{\"lastUpdated\":9999999999999,\"countryCode\":\"GB\"}}",
         "lastSeen": "2019-01-26T23:32:27Z",
         "locale": "en-US",
         "userId": "redacted"
