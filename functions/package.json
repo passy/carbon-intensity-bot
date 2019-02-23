@@ -32,7 +32,7 @@
     "purescript": "^0.12.0",
     "purescript-psa": "^0.7.3",
     "purs-loader": "^3.2.0",
-    "ts-jest": "^23.10.5",
+    "ts-jest": "^24.0.0",
     "ts-loader": "5.3.2",
     "tslint": "^5.8.0",
     "typescript": "^3.2.2",
