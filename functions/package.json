@@ -29,7 +29,7 @@
     "nock": "^10.0.6",
     "prettier": "^1.15.3",
     "pulp": "^12.3.1",
-    "purescript": "0.12.3",
+    "purescript": "0.12.5",
     "purescript-psa": "^0.7.3",
     "purs-loader": "^3.2.0",
     "ts-jest": "^24.0.0",
