@@ -19,7 +19,7 @@ import Affjax.StatusCode (StatusCode(..))
 import Control.Comonad (extract)
 import Control.Promise as Promise
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.?), (.??))
+import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.:), (.:?))
 import Data.Bifunctor (lmap)
 import Data.Either (Either(Left, Right))
 import Data.Function.Uncurried (Fn2, mkFn2)
@@ -72,13 +72,13 @@ responseToShared (Co2Response r) =
 instance decodeJsonCo2Response :: DecodeJson (Co2ResponseF Maybe) where
   decodeJson json = do
     obj <- decodeJson json
-    countryCode <- obj .? "countryCode"
-    units <- obj .? "units"
-    carbonIntensityUnit <- units .? "carbonIntensity"
+    countryCode <- obj .: "countryCode"
+    units <- obj .: "units"
+    carbonIntensityUnit <- units .: "carbonIntensity"
 
-    data' <- obj .? "data"
-    carbonIntensity :: Maybe Number <- data' .?? "carbonIntensity"
-    maybeFossilFuelPercentage :: Maybe (Maybe Number) <- data' .?? "fossilFuelPercentage"
+    data' <- obj .: "data"
+    carbonIntensity :: Maybe Number <- data' .:? "carbonIntensity"
+    maybeFossilFuelPercentage :: Maybe (Maybe Number) <- data' .:? "fossilFuelPercentage"
 
     let fossilFuelPercentage :: Maybe Number 
         fossilFuelPercentage = join maybeFossilFuelPercentage
