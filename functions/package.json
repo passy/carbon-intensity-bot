@@ -13,12 +13,11 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google/maps": "^0.5.5",
-    "actions-on-google": "^2.5.0",
+    "actions-on-google": "^2.6.0",
     "firebase-functions": "^2.1.0",
     "xhr2": "^0.1.4"
   },
   "devDependencies": {
-    "@types/actions-on-google": "^1.8.0",
     "@types/google__maps": "^0.5.0",
     "@types/jest": "^24.0.3",
     "@types/nock": "^9.3.0",
