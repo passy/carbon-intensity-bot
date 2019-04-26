@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/google__maps": "^0.5.0",
     "@types/jest": "^24.0.3",
-    "@types/nock": "^9.3.0",
+    "@types/nock": "^10.0.0",
     "firebase-admin": "^7.0.0",
     "firebase-functions-test": "^0.1.6",
     "firebase-tools": "^6.3.1",
