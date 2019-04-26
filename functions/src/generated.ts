@@ -1,6 +1,6 @@
-export interface SharedResponse {
-  carbonIntensity: number;
-  carbonIntensityUnit: string;
-  countryCode: string;
-  fossilFuelPercentage: number;
-}
+export type SharedResponse = {
+  carbonIntensity: number,
+  carbonIntensityUnit: string,
+  countryCode: string,
+  fossilFuelPercentage: number
+};

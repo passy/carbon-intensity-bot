@@ -9,15 +9,17 @@ const test = firebaseFunctionsTest();
 // invocation have occured.
 import * as triggers from "../lib/index";
 
+type ResolveFn = (response: MockResponse) => void;
+
 class MockResponse {
   public statusCode: number;
   public headers: Map<string, string>;
   public body: any;
-  public resolve: Function;
+  public resolve: ResolveFn;
 
-  constructor(resolve: Function) {
+  constructor(resolve: ResolveFn) {
     this.statusCode = 200;
-    this.headers = new Map();
+    this.headers = new Map<string, string>();
     this.resolve = resolve;
     this.body = {};
   }
@@ -33,11 +35,11 @@ class MockResponse {
     return this;
   }
 
-  public setHeader(key, value) {
+  public setHeader(key: string, value: string) {
     this.headers[key] = value;
   }
 
-  public append(header, value) {
+  public append(header: string, value: string) {
     this.headers[header] = value;
     return this;
   }
@@ -46,35 +48,40 @@ class MockResponse {
 const USE_REAL_CONFIG = false;
 
 if (USE_REAL_CONFIG) {
-  test.mockConfig(JSON.parse(fs.readFileSync(
-    path.join(__dirname, "..", ".runtimeconfig.json"), {encoding: "utf-8"})));
+  test.mockConfig(
+    JSON.parse(
+      fs.readFileSync(path.join(__dirname, "..", ".runtimeconfig.json"), {
+        encoding: "utf-8"
+      })
+    )
+  );
 } else {
   test.mockConfig({
     co2signal: {
-      key: "012345",
+      key: "012345"
     },
     geocoding: {
       // The 'AIza' prefix is validated on the client-side.
-      key: "AIzaAABBCC",
-    },
+      key: "AIzaAABBCC"
+    }
   });
 }
 
 const loadFixture = (name: string) => {
   const body = JSON.parse(
     fs.readFileSync(path.join(__dirname, "requests", name + ".json"), {
-      encoding: "utf-8",
-    }),
+      encoding: "utf-8"
+    })
   );
   return {
     body,
-    // tslint-ignore
+    // tslint:disable-next-line
     get: () => {},
-    headers: {},
+    headers: {}
   };
 };
 
-["carbon_zip", "carbon_latlon", "carbon_userstorage"].forEach((fixture) => {
+["carbon_zip", "carbon_latlon", "carbon_userstorage"].forEach(fixture => {
   it(`produces a response for fixture ${fixture}`, async () => {
     expect.assertions(2);
     nockSetups[fixture]();
@@ -86,7 +93,11 @@ const loadFixture = (name: string) => {
       return resp;
     });
     expect(resp1.statusCode).toBe(200);
-    expect(resp1.body.payload.google.richResponse.items[0].simpleResponse.textToSpeech)
-      .toMatch(/\<speak\>In your area, the electricity is generated using \d+\.\d% fossil fuels leading to a carbon intensity of \d+\.\d+ gCO2eq\/kWh\.\<\/speak\>/);
+    expect(
+      resp1.body.payload.google.richResponse.items[0].simpleResponse
+        .textToSpeech
+    ).toMatch(
+      /\<speak\>In your area, the electricity is generated using \d+\.\d% fossil fuels leading to a carbon intensity of \d+\.\d+ gCO2eq\/kWh\.\<\/speak\>/
+    );
   });
 });

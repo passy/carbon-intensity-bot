@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "pulp build && webpack --config ./webpack.config.js && tsc && tslint -p tslint.json",
+    "build": "pulp build && webpack --config ./webpack.config.js && tsc && tslint -p tsconfig.json",
     "build:generate-types": "pulp run -m GenerateTypes",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
@@ -33,8 +33,9 @@
     "purs-loader": "^3.2.0",
     "ts-jest": "^24.0.0",
     "ts-loader": "5.3.3",
-    "tslint": "^5.8.0",
-    "typescript": "^3.2.2",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.4.5",
     "webpack": "^4.28.0",
     "webpack-cli": "^3.2.0",
     "webpack-node-externals": "^1.7.2"

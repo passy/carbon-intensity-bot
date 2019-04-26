@@ -1,9 +1,20 @@
 {
-    "defaultSeverity": "warn",
-    "extends": "./node_modules/tslint/lib/configs/recommended",
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:latest",
+        "tslint-config-prettier"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "src/*generated.*"
+        ]
+    },
     "jsRules": {},
     "rules": {
         "no-console": {
+            "severity": "off"
+        },
+        "no-implicit-dependencies": {
             "severity": "off"
         }
     },
