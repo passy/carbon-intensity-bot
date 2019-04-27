@@ -7,6 +7,11 @@ import { SharedResponse } from "./generated";
 // @ts-ignore
 import * as lib from "./lib.purs";
 
+interface ICoordinates {
+  latitude: number;
+  longitude: number;
+}
+
 /**
  * For geocoding city + ZIP, I could do something like this:
  *
@@ -17,15 +22,15 @@ import * as lib from "./lib.purs";
 const coarseLocationToCoordinates = (
   mapsClient: any,
   postCode: string,
-  city: string,
-): Promise<{ latitude: number; longitude: number }> => {
+  city: string
+): Promise<ICoordinates> => {
   return new Promise((resolve, reject) =>
     mapsClient.geocode(
       {
         components: {
           locality: city,
-          post_code: postCode,
-        },
+          post_code: postCode
+        }
       },
       (e: Error, response: any) => {
         if (e) {
@@ -36,10 +41,10 @@ const coarseLocationToCoordinates = (
         const components = results[0].geometry;
         return resolve({
           latitude: components.location.lat,
-          longitude: components.location.lng,
+          longitude: components.location.lng
         });
-      },
-    ),
+      }
+    )
   );
 };
 
@@ -53,7 +58,7 @@ const coarseLocationToCoordinates = (
 const coordinatesToCountryCode = (
   mapsClient: any,
   latitude: number,
-  longitude: number,
+  longitude: number
 ): Promise<string> => {
   const latlng = [latitude, longitude];
   return new Promise((resolve, reject) =>
@@ -68,8 +73,7 @@ const coordinatesToCountryCode = (
           return reject(e);
         }
         const { results } = response.json;
-        /** @type {Array<Object<string, *>>} */
-        const components = results[0].address_components;
+        const components: Array<{ [s: string]: any; }> = results[0].address_components;
         for (const component of components) {
           for (const type of component.types) {
             if (type === "country") {
@@ -78,10 +82,10 @@ const coordinatesToCountryCode = (
           }
         }
         reject(
-          new Error("Could not parse country code from Google Maps results"),
+          new Error("Could not parse country code from Google Maps results")
         );
-      },
-    ),
+      }
+    )
   );
 };
 
@@ -116,7 +120,7 @@ const ssml = (template: TemplateStringsArray, ...inputs: string[]): string =>
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;") +
           str
-        : str,
+        : str
     )
     .trim()
     .replace(/\s+/g, " ")
@@ -129,7 +133,7 @@ const Actions = {
   REQUEST_LOC_PERMISSION: "request.location.permission",
   UNHANDLED_DEEP_LINK: "error.deeplink",
   UNKNOWN_INTENT: "error.unknown_intent",
-  WELCOME: "input.welcome",
+  WELCOME: "input.welcome"
 };
 
 const Responses = {
@@ -166,7 +170,7 @@ const Responses = {
   welcome: () =>
     ssml`<speak>
       Hi, I'm Carbon Intensity bot. Would you like me to tell you your local carbon intensity or fossil fuel usage?
-    </speak>`,
+    </speak>`
 };
 
 declare interface IUserStorage {
@@ -180,7 +184,7 @@ declare interface IStoredData {
 
 const respondWithCountryCode = (
   conv: actions.DialogflowConversation<{}, {}, actions.Contexts>,
-  countryCode: string,
+  countryCode: string
 ): any => {
   return lib
     .requestCo2Country(functions.config().co2signal.key, countryCode)()
@@ -206,8 +210,8 @@ const respondWithCountryCode = (
           return conv.close(
             Responses.unexpectedStatusCode(
               errObj.contents[0],
-              errObj.contents[1],
-            ),
+              errObj.contents[1]
+            )
           );
         default:
           throw err;
@@ -224,22 +228,22 @@ const isStorageExpired = (storage: IUserStorage): boolean =>
 
 const app = actions.dialogflow();
 
-app.intent(Actions.UNKNOWN_INTENT, (conv) => {
+app.intent(Actions.UNKNOWN_INTENT, conv => {
   conv.ask(Responses.errorUnknownIntent());
 });
 
-app.intent(Actions.UNHANDLED_DEEP_LINK, (conv) => {
+app.intent(Actions.UNHANDLED_DEEP_LINK, conv => {
   conv.ask(Responses.welcome());
 });
 
-app.intent(Actions.WELCOME, (conv) => {
+app.intent(Actions.WELCOME, conv => {
   conv.ask(Responses.welcome());
 });
 
-app.intent(Actions.REQUEST_LOC_PERMISSION, (conv) => {
+app.intent(Actions.REQUEST_LOC_PERMISSION, conv => {
   // If the request comes from a phone, we can't use coarse location.
   const requestedPermission = conv.surface.capabilities.has(
-    "actions.capability.SCREEN_OUTPUT",
+    "actions.capability.SCREEN_OUTPUT"
   )
     ? "DEVICE_PRECISE_LOCATION"
     : "DEVICE_COARSE_LOCATION";
@@ -253,8 +257,8 @@ app.intent(Actions.REQUEST_LOC_PERMISSION, (conv) => {
     return conv.ask(
       new actions.Permission({
         context: Responses.permissionReason(),
-        permissions: requestedPermission,
-      }),
+        permissions: requestedPermission
+      })
     );
   }
 
@@ -267,12 +271,11 @@ app.intent(Actions.READ_CARBON_INTENSITY, (conv, params, granted) => {
   }
 
   const mapsClient = maps.createClient({
-    key: functions.config().geocoding.key,
+    key: functions.config().geocoding.key
   });
   const requestedPermission = (conv.data as IStoredData).requestedPermission;
 
-  // FIXME: Should be of type Coordinates.
-  let coordinatesP: Promise<{ latitude: number; longitude: number }>;
+  let coordinatesP: Promise<ICoordinates>;
   if (requestedPermission === "DEVICE_COARSE_LOCATION") {
     // If we requested coarse location, it means that we're on a speaker device.
     const location = conv.device.location;
@@ -280,7 +283,7 @@ app.intent(Actions.READ_CARBON_INTENSITY, (conv, params, granted) => {
       coordinatesP = coarseLocationToCoordinates(
         mapsClient,
         location.zipCode,
-        location.city,
+        location.city
       );
     } else {
       coordinatesP = Promise.reject(new Error("Coarse location unavailable."));
@@ -288,10 +291,10 @@ app.intent(Actions.READ_CARBON_INTENSITY, (conv, params, granted) => {
   } else if (requestedPermission === "DEVICE_PRECISE_LOCATION") {
     if (conv.device.location && conv.device.location.coordinates) {
       const coordinates = conv.device.location.coordinates;
-      // This is a silly fallback but I can't think of a good way why they should actually be undefined.
+      // This is a silly fallback but I can't think of a good reason why they should actually be undefined.
       coordinatesP = Promise.resolve({
         latitude: coordinates.latitude || 0,
-        longitude: coordinates.longitude || 0,
+        longitude: coordinates.longitude || 0
       });
     } else {
       coordinatesP = Promise.reject(new Error("Precise location unavailable."));
@@ -302,22 +305,22 @@ app.intent(Actions.READ_CARBON_INTENSITY, (conv, params, granted) => {
 
   return (
     coordinatesP
-      .then((coordinates) =>
+      .then(coordinates =>
         coordinatesToCountryCode(
           mapsClient,
           coordinates.latitude,
-          coordinates.longitude,
-        ),
+          coordinates.longitude
+        )
       )
       // Yes, this is as bad as it looks. Some magic object we can write to and is somehow persisted in the CLOUD.
-      .then((countryCode) => {
+      .then(countryCode => {
         const us = conv.user.storage as IUserStorage;
         us.lastUpdated = Date.now();
         us.countryCode = countryCode;
         return countryCode;
       })
       .then(respondWithCountryCode.bind(null, conv))
-      .catch((e) => {
+      .catch(e => {
         conv.close(Responses.errorResolvingLocation(e.toString()));
       })
   );
