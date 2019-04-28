@@ -6,6 +6,7 @@
     "purescript-aff-promise": "^2.0.1",
     "purescript-functions": "^4.0.0",
     "purescript-debug": "^4.0.0",
+    "purescript-argonaut-core": "^5.0.0",
     "purescript-argonaut-codecs": "^6.0.1",
     "purescript-psci-support": "^4.0.0",
     "purescript-foreign": "^5.0.0",
@@ -16,5 +17,11 @@
     "purescript-affjax": "passy/purescript-affjax#72746c7cc9fbff7c2c1d59d91fe500552d6c16a1",
     "purescript-prelude": "^4.1.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "purescript-argonaut-core": "^5.0.0",
+    "purescript-foreign-object": "^2.0.0",
+    "purescript-record": "^2.0.0",
+    "purescript-typelevel-prelude": "^4.0.0"
+  }
 }
