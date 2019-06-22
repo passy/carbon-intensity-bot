@@ -11,7 +11,7 @@
     "purescript-psci-support": "^4.0.0",
     "purescript-foreign": "^5.0.0",
     "purescript-foreign-generic": "^9.0.0",
-    "purescript-ohyes": "^2.0.0",
+    "purescript-ohyes": "^2.1.0",
     "purescript-node-fs-aff": "^6.0.0",
     "purescript-prettier": "^0.2.0",
     "purescript-affjax": "passy/purescript-affjax#72746c7cc9fbff7c2c1d59d91fe500552d6c16a1",
