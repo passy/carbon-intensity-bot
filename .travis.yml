@@ -18,6 +18,6 @@ script:
     - cd functions
     - npm i -g bower
     - bower i
-    - npm i
-    - npm run build
-    - npm test
+    - yarn
+    - yarn build
+    - yarn test
