@@ -18,5 +18,12 @@
     "purescript-prelude": "^4.1.0",
     "purescript-variant": "^6.0.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "purescript-variant": "^6.0.1",
+    "purescript-argonaut-core": "^5.0.0",
+    "purescript-record": "^2.0.1",
+    "purescript-foreign-object": "^2.0.0",
+    "purescript-typelevel-prelude": ">= 4.0.0 < 6.0.0"
+  }
 }
