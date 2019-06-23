@@ -15,7 +15,7 @@
     "@google/maps": "^0.5.5",
     "actions-on-google": "^2.6.0",
     "firebase-functions": "^2.1.0",
-    "xhr2": "^0.1.4"
+    "xhr2": "^0.2.0"
   },
   "devDependencies": {
     "@types/google__maps": "^0.5.0",
