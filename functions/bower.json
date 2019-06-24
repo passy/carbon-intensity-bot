@@ -11,17 +11,19 @@
     "purescript-psci-support": "^4.0.0",
     "purescript-foreign": "^5.0.0",
     "purescript-foreign-generic": "^9.0.0",
-    "purescript-ohyes": "^2.0.0",
+    "purescript-ohyes": "^2.1.0",
     "purescript-node-fs-aff": "^6.0.0",
     "purescript-prettier": "^0.2.0",
     "purescript-affjax": "passy/purescript-affjax#72746c7cc9fbff7c2c1d59d91fe500552d6c16a1",
-    "purescript-prelude": "^4.1.0"
+    "purescript-prelude": "^4.1.0",
+    "purescript-variant": "^6.0.0"
   },
   "dependencies": {},
   "resolutions": {
+    "purescript-variant": "^6.0.1",
     "purescript-argonaut-core": "^5.0.0",
+    "purescript-record": "^2.0.1",
     "purescript-foreign-object": "^2.0.0",
-    "purescript-record": "^2.0.0",
-    "purescript-typelevel-prelude": "^4.0.0"
+    "purescript-typelevel-prelude": ">= 4.0.0 < 6.0.0"
   }
 }
