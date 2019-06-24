@@ -73,7 +73,8 @@ const coordinatesToCountryCode = (
           return reject(e);
         }
         const { results } = response.json;
-        const components: Array<{ [s: string]: any; }> = results[0].address_components;
+        const components: Array<{ [s: string]: any }> =
+          results[0].address_components;
         for (const component of components) {
           for (const type of component.types) {
             if (type === "country") {
@@ -183,7 +184,7 @@ declare interface IStoredData {
 }
 
 const respondWithCountryCode = (
-  conv: actions.DialogflowConversation<{}, {}, actions.Contexts>,
+  conv: actions.DialogflowConversation<any, any, actions.Contexts>,
   countryCode: string
 ): any => {
   return lib
