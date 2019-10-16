@@ -21,7 +21,7 @@
     "@types/google__maps": "^0.5.0",
     "@types/jest": "^24.0.3",
     "@types/nock": "^11.1.0",
-    "firebase-admin": "^8.0.0",
+    "firebase-admin": "^8.6.1",
     "firebase-functions-test": "^0.1.6",
     "firebase-tools": "^7.1.0",
     "jest": "^24.1.0",
