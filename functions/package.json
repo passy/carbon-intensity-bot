@@ -31,7 +31,7 @@
     "purescript": "0.13.0",
     "purescript-psa": "^0.7.3",
     "purs-loader": "^3.5.0",
-    "ts-jest": "^24.0.0",
+    "ts-jest": "^25.1.0",
     "ts-loader": "5.3.3",
     "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
