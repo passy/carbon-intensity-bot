@@ -265,12 +265,12 @@
     through2 "^3.0.0"
     xdg-basedir "^4.0.0"
 
-"@google/maps@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@google/maps/-/maps-1.0.1.tgz#e0f4b32119500ff3b92c47028623208f3b3d5d43"
-  integrity sha512-TURNZX9L7pQoluhhovt9Dvrw1MISJl2eCidknEeybG8T8e8UH9NNH7SYoxLkdU4l/1sqyUd9m8uwKGe7llWWPQ==
+"@google/maps@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@google/maps/-/maps-1.1.0.tgz#038d8bf53d63f2ca0540c5d30c9136c8f70e0df1"
+  integrity sha512-mIU397T3H0Xlio1ftZvB11DQr+7aYEYTMeDuLfI8OTE0mMgvD3sAFWuAhXvCCLrfEy8FXvLxQp1fwYXyM+lRPA==
   dependencies:
-    https-proxy-agent "^2.2.1"
+    https-proxy-agent "^3.0.0"
     uuid ">=2.2.1"
 
 "@grpc/grpc-js@^0.4.0":
