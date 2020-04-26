@@ -31,7 +31,8 @@ module.exports = {
           {
             loader: "purs-loader",
             options: {
-              psc: "psa"
+              psc: "psa",
+              spago: true
             }
           }
         ]
