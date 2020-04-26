@@ -2,3 +2,4 @@
 /bower_components/
 .psc-ide-port
 .runtimeconfig.json
+.spago/
