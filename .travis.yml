@@ -16,8 +16,6 @@ cache:
 
 script:
     - cd functions
-    - npm i -g bower
-    - bower i
     - yarn
     - yarn build
     - yarn test

@@ -1,8 +1,8 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "pulp build && webpack --config ./webpack.config.js && tsc && tslint -p tsconfig.json",
-    "build:generate-types": "pulp run -m GenerateTypes",
+    "build": "spago build && webpack --config ./webpack.config.js && tsc && tslint -p tsconfig.json",
+    "build:generate-types": "spago run -m GenerateTypes",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",
     "start": "npm run shell",
@@ -25,8 +25,7 @@
     "firebase-tools": "^7.14.0",
     "jest": "^25.4.0",
     "nock": "^10.0.6",
-    "prettier": "^2.0.5",
-    "pulp": "^14.0.0",
+    "prettier": "^1.18.2",
     "purescript": "0.13.6",
     "purescript-psa": "^0.7.3",
     "purs-loader": "^3.5.0",
