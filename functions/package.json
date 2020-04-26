@@ -11,6 +11,9 @@
     "logs": "firebase functions:log"
   },
   "main": "lib/index.js",
+  "engines": {
+    "node": "10"
+  },
   "dependencies": {
     "@google/maps": "^1.0.0",
     "actions-on-google": "^2.6.0",
