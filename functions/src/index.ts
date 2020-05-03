@@ -227,7 +227,7 @@ const isStorageExpired = (storage: IUserStorage): boolean =>
   storage.lastUpdated > 0 &&
   Date.now() - storage.lastUpdated > WEEK_IN_MS;
 
-const app = actions.dialogflow();
+const app = actions.dialogflow({debug: process.env.NODE_ENV !== 'production'});
 
 app.intent(Actions.UNKNOWN_INTENT, conv => {
   conv.ask(Responses.errorUnknownIntent());
