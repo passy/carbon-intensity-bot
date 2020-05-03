@@ -170,7 +170,7 @@ const Responses = {
     </speak>`,
   welcome: () =>
     ssml`<speak>
-      Hi, I'm Carbon Intensity bot. Would you like me to tell you your local carbon intensity or fossil fuel usage?
+      Hi, I'm Carbon Intensity bot. Would you like me to tell you your local fossil fuel usage?
     </speak>`
 };
 
@@ -239,6 +239,7 @@ app.intent(Actions.UNHANDLED_DEEP_LINK, conv => {
 
 app.intent(Actions.WELCOME, conv => {
   conv.ask(Responses.welcome());
+  conv.ask(new actions.Suggestions('Yes'));
 });
 
 app.intent(Actions.REQUEST_LOC_PERMISSION, conv => {
